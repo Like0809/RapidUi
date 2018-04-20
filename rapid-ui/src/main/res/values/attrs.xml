@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="IconTextView">
+        <attr name="itv_icon" format="string" />
+        <attr name="itv_icon_selected" format="string" />
+        <attr name="itv_icon_pressed" format="string" />
+        <attr name="itv_color" format="color" />
+    </declare-styleable>
+
+    <declare-styleable name="IconFontWrapLayout">
+        <attr name="ifw_icon" format="string" />
+        <attr name="ifw_icon_selected" format="string" />
+        <attr name="ifw_icon_pressed" format="string" />
+        <attr name="ifw_icon_color" format="color" />
+        <attr name="ifw_icon_size" format="dimension" />
+
+        <attr name="ifw_title" format="string" />
+        <attr name="ifw_title_max_lines" format="integer" />
+        <attr name="ifw_title_selected" format="string" />
+        <attr name="ifw_title_pressed" format="string" />
+        <attr name="ifw_title_color" format="color" />
+        <attr name="ifw_title_size" format="dimension" />
+
+        <attr name="ifw_right_text" format="string" />
+        <attr name="ifw_right_text_size" format="dimension" />
+        <attr name="ifw_right_text_color" format="color" />
+
+        <attr name="ifw_spacing_horizontal" format="dimension" />
+        <attr name="ifw_spacing_vertical" format="dimension" />
+
+        <attr name="ifw_arrow" format="boolean" />
+
+    </declare-styleable>
+
+
+    <declare-styleable name="WheelProgress">
+        <attr name="wp_progressIndeterminate" format="boolean" />
+        <attr name="wp_barColor" format="color" />
+        <attr name="wp_rimColor" format="color" />
+        <attr name="wp_rimWidth" format="dimension" />
+        <attr name="wp_spinSpeed" format="float" />
+        <attr name="wp_barSpinCycleTime" format="integer" />
+        <attr name="wp_circleRadius" format="dimension" />
+        <attr name="wp_fillRadius" format="boolean" />
+        <attr name="wp_barWidth" format="dimension" />
+        <attr name="wp_linearProgress" format="boolean" />
+    </declare-styleable>
+
+</resources>

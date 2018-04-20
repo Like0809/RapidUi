@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="RapidBaseTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimary</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="RapidBaseToolbar">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">?attr/actionBarSize</item>
+        <item name="theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
+        <item name="android:popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
+        <item name="android:background">@color/colorPrimary</item>
+    </style>
+
+    <style name="RapidBaseDialog" parent="@style/ThemeOverlay.AppCompat.Dialog">
+        <item name="android:windowBackground">@drawable/shape_dialog_base</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
+        <item name="android:backgroundDimEnabled">true</item>
+    </style>
+
+
+    <!--IconFontWrapper-->
+    <style name="RapidIfwBase">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="IfwTab" parent="IfwVertical.Base">
+        <item name="ifw_icon_color">@color/selector_main_tab</item>
+        <item name="ifw_icon_size">18sp</item>
+        <item name="ifw_title_color">@color/selector_main_tab</item>
+        <item name="ifw_title_size">12sp</item>
+    </style>
+
+    <style name="RapidIfwHorizontal" parent="RapidIfwBase">
+        <item name="android:gravity">center|left</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:padding">16dp</item>
+        <item name="android:background">?attr/selectableItemBackground</item>
+        <item name="ifw_icon_color">@color/colorPrimary</item>
+        <item name="ifw_icon_size">16sp</item>
+        <item name="ifw_title_color">#555</item>
+        <item name="ifw_title_size">15sp</item>
+    </style>
+
+    <style name="RapidIfwHorizontal.NoIcon" parent="RapidIfwHorizontal">
+        <item name="ifw_icon_size">0dp</item>
+        <item name="ifw_spacing_horizontal">0dp</item>
+    </style>
+
+    <style name="RapidIfwHorizontal.NoIcon.Arrow" parent="RapidIfwHorizontal">
+        <item name="ifw_icon_size">0dp</item>
+        <item name="ifw_arrow">true</item>
+        <item name="ifw_spacing_horizontal">0dp</item>
+    </style>
+
+    <style name="RapidIfwHorizontal.Arrow" parent="RapidIfwHorizontal">
+        <item name="ifw_arrow">true</item>
+    </style>
+
+    <style name="RapidIfwHorizontal.Arrow.Onclick" parent="RapidIfwHorizontal">
+        <item name="ifw_arrow">true</item>
+        <item name="android:onClick">onClick</item>
+    </style>
+
+    <style name="IfwVertical.Base" parent="RapidIfwBase">
+        <item name="android:gravity">center</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:padding">0dp</item>
+        <item name="android:background">#00000000</item>
+        <item name="ifw_spacing_vertical">0dp</item>
+        <item name="ifw_icon_color">@color/colorPrimary</item>
+        <item name="ifw_icon_size">30sp</item>
+        <item name="ifw_title_color">@color/colorPrimary</item>
+        <item name="ifw_title_size">12sp</item>
+    </style>
+
+    <style name="IfwHome" parent="IfwVertical.Base">
+        <item name="ifw_icon_color">@color/colorPrimary</item>
+        <item name="ifw_icon_size">32sp</item>
+        <item name="ifw_spacing_vertical">0dp</item>
+    </style>
+
+
+</resources>
