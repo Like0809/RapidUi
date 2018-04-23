@@ -34,7 +34,7 @@ public class NetworkDialog extends Dialog {
         super(context, themeResId);
         setCancelable(false);
         setContentView(R.layout.rapid_layout_dialog);
-        mTitle = (TextView) findViewById(R.id.dialog_tv);
+        mTitle = findViewById(R.id.dialog_tv);
         setText(text);
         Window window = getWindow();
         if (window != null) {

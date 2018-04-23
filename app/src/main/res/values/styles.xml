@@ -1,0 +1,14 @@
+<resources>
+
+    <style name="RapidBaseTheme.Main">
+        <item name="android:windowBackground">@color/colorAppBackground</item>
+        <item name="android:windowSoftInputMode">adjustUnspecified|stateHidden</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <!--透明导航栏-->
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <!--<item name="android:windowTranslucentNavigation">true</item>-->
+        <item name="android:navigationBarColor">@color/colorPrimaryDark</item>
+    </style>
+
+</resources>

@@ -4,10 +4,16 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
+import com.like.rapidui.R;
 
 import java.lang.reflect.Field;
 import java.util.Map;
@@ -19,23 +25,25 @@ import java.util.Map;
 @SuppressWarnings("All")
 @SuppressLint("All")
 public class BaseFragment extends Fragment {
-    protected String Tag;
 
+    protected View mRootView;
+
+    @Nullable
     @Override
-    public void onAttach(Context activity) {
-        Tag = getClass().getSimpleName();
-        super.onAttach(activity);
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        if (mRootView != null)
+            return mRootView;
+        mRootView = inflater.inflate(getContentView(), null, false);
+        return mRootView;
     }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
+    public int getContentView() {
+        return 0;
     }
 
     private static String[] PERMISSIONS_STORAGE = {
             Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA
     };
-
 
     protected void verifyStoragePermissions(int requestCode) {
         requestPermissions(PERMISSIONS_STORAGE, requestCode);

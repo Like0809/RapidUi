@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <ezy.ui.view.BannerView
+        android:id="@+id/banner"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:background="@android:color/white"
+        app:bvAspectRatio="0.6666666"
+        app:bvBarColor="#22222222"
+        app:bvIndicatorColor="#cccccc"
+        app:bvIndicatorColorSelected="@color/colorAccent"
+        app:bvIndicatorGravity="right"
+        app:bvTitleSize="12sp"
+        app:bvTitleVisible="true" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+        android:background="@color/colorAppBackground" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingBottom="8dp"
+        android:paddingTop="8dp">
+
+        <LinearLayout
+            android:id="@+id/ll_recharge"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <com.like.rapidui.ui.icon.widget.IconFontWrapLayout
+                style="@style/IfwHome"
+                app:ifw_icon="{fa-heart-o spin}"
+                app:ifw_title="快捷菜单一" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/ll_invest"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <com.like.rapidui.ui.icon.widget.IconFontWrapLayout
+                style="@style/IfwHome"
+                app:ifw_icon="{fa-heart-o spin}"
+                app:ifw_title="快捷菜单二" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_transfer"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+
+            <com.like.rapidui.ui.icon.widget.IconFontWrapLayout
+                style="@style/IfwHome"
+                app:ifw_icon="{fa-heart-o spin}"
+                app:ifw_title="快捷菜单三" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_invite"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <com.like.rapidui.ui.icon.widget.IconFontWrapLayout
+                style="@style/IfwHome"
+                app:ifw_icon="{fa-heart-o spin}"
+                app:ifw_title="快捷菜单四" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+        android:background="@color/colorAppBackground" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:padding="16dp"
+        android:text="推荐课程"
+        android:textColor="@color/colorTextDark" />
+
+
+</LinearLayout>

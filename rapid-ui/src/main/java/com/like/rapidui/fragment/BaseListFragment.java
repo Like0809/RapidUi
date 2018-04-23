@@ -1,30 +1,32 @@
-package com.like.rapidui.activity;
+package com.like.rapidui.fragment;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.google.gson.Gson;
 import com.like.rapidui.PagingParam;
-import com.like.rapidui.Request;
-import com.like.rapidui.RequestListener;
 import com.like.rapidui.R;
 import com.like.rapidui.RapidUi;
+import com.like.rapidui.Request;
+import com.like.rapidui.RequestListener;
 import com.like.rapidui.RequestStatus;
+import com.like.rapidui.activity.EmptyView;
 import com.like.rapidui.callback.DataLoader;
 import com.like.rapidui.network.ApiMessage;
 import com.like.rapidui.network.OkHttpUtils;
 import com.like.rapidui.network.callback.Callback;
 import com.like.rapidui.network.callback.StringCallback;
+
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -33,6 +35,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import okhttp3.Call;
@@ -45,8 +48,8 @@ import static com.like.rapidui.RequestListener.SUCCESS;
  * Created By Like on 2018/3/23.
  */
 
-@SuppressWarnings("ALL")
-public abstract class BaseListActivity<T> extends BaseActivity {
+@SuppressWarnings("unchecked")
+public abstract class BaseListFragment<T> extends BaseFragment {
 
     protected SwipeRefreshLayout mRefreshLayout;
     protected RecyclerView mRecyclerView;
@@ -54,16 +57,19 @@ public abstract class BaseListActivity<T> extends BaseActivity {
     protected final int PULL_UP = 1, PULL_DOWN = 2, INIT = 0;
     protected int mPageNum = 1, mPageSize = 10;
     protected EmptyView mEmptyView;
+    protected View mRootView;
     protected Type mEntityType;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        if (mRootView != null)
+            return mRootView;
+        mRootView = inflater.inflate(getContentView(), null, false);
         mEntityType = ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
-        mRecyclerView = findViewById(R.id.recyclerView);
+        mRecyclerView = mRootView.findViewById(R.id.recyclerView);
         mAdapter = new InnerAdapter(getItemView());
         mRecyclerView.setAdapter(mAdapter);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mEmptyView = new EmptyView(getEmptyView()) {
             @Override
             public void setMessage(String message) {
@@ -91,7 +97,7 @@ public abstract class BaseListActivity<T> extends BaseActivity {
             }
         }, mRecyclerView);
         mAdapter.setEnableLoadMore(getEnableLoadMore());
-        mRefreshLayout = findViewById(R.id.swipeRefresh);
+        mRefreshLayout = mRootView.findViewById(R.id.swipeRefresh);
         if (mRefreshLayout != null)
             mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
@@ -100,6 +106,7 @@ public abstract class BaseListActivity<T> extends BaseActivity {
                     refresh(PULL_DOWN);
                 }
             });
+        return mRootView;
     }
 
     public void refresh() {
@@ -169,7 +176,7 @@ public abstract class BaseListActivity<T> extends BaseActivity {
                     }
                 }
             } catch (JSONException e) {
-                e.printStackTrace();
+                throw new IllegalArgumentException("返回的数据格式错误");
             }
         }
         return list;
@@ -188,22 +195,21 @@ public abstract class BaseListActivity<T> extends BaseActivity {
     protected void loadData(String url, Map<String, String> params, Map<String, String> headers, RequestListener requestListener, final int loadType) {
         Request request = new Request(url, params, headers, loadType);
         DataLoader dataLoader = getDataLoader();
-        if (dataLoader == null) {
+        if (dataLoader == null)
             dataLoader = RapidUi.getInstance().getDataLoader();
-        }
         dataLoader.load(request, requestListener);
     }
 
-    @Override
     public int getContentView() {
-        return R.layout.rapid_activity_base_list;
+        return R.layout.rapid_fragment_base_list;
     }
 
-    public abstract String getUrl();
 
     public DataLoader getDataLoader() {
         return null;
     }
+
+    public abstract String getUrl();
 
     public void onApiError(int code, String message) {
     }
@@ -226,7 +232,7 @@ public abstract class BaseListActivity<T> extends BaseActivity {
 
     @SuppressLint("InflateParams")
     public View getEmptyView() {
-        return LayoutInflater.from(this).inflate(R.layout.rapid_layout_base_empty_view, null);
+        return LayoutInflater.from(getContext()).inflate(R.layout.rapid_layout_base_empty_view, null);
     }
 
     public int getItemView() {
@@ -247,7 +253,7 @@ public abstract class BaseListActivity<T> extends BaseActivity {
 
         @Override
         protected void convert(BaseViewHolder helper, T item) {
-            BaseListActivity.this.convert(helper, item);
+            BaseListFragment.this.convert(helper, item);
         }
 
     }

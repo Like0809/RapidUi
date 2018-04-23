@@ -21,7 +21,7 @@ public class SimpleDividerDecoration extends RecyclerView.ItemDecoration {
 
     public SimpleDividerDecoration(Context context) {
         dividerPaint = new Paint();
-        dividerPaint.setColor(context.getResources().getColor(R.color.grey400));
+        dividerPaint.setColor(context.getResources().getColor(R.color.grey200));
         dividerHeight = 1;
     }
 
