@@ -5,7 +5,6 @@ group = 'com.github.Like0809'
 
 android {
     compileSdkVersion 26
-
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 26
@@ -15,24 +14,26 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
     }
-
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-
+    compileOptions {
+        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_1_8
+    }
+    buildToolsVersion '27.0.3'
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:26.1.0'
     implementation 'com.android.support:design:26.1.0'
     implementation 'com.android.support:support-v4:26.1.0'
-    compile 'com.google.code.gson:gson:2.8.2'
-    compile 'com.squareup.okhttp3:okhttp:3.10.0'
-    compile 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.36'
-    compile 'com.squareup.picasso:picasso:2.71828'
+    api 'com.google.code.gson:gson:2.8.2'
+    api 'com.squareup.okhttp3:okhttp:3.10.0'
+    api 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.36'
+    api 'com.squareup.picasso:picasso:2.71828'
 }

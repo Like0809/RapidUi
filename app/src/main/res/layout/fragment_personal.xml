@@ -60,7 +60,7 @@
                 android:orientation="vertical">
 
                 <com.like.rapidui.ui.icon.widget.IconFontWrapLayout
-                    android:id="@+id/ifw_h_baby"
+                    android:id="@+id/ifw_menu_1"
                     style="@style/RapidIfwHorizontal.Arrow"
                     app:ifw_icon="{fa-chrome spin}"
                     app:ifw_title="菜单一" />
@@ -68,7 +68,7 @@
                 <View style="@style/RapidDivider.Margin" />
 
                 <com.like.rapidui.ui.icon.widget.IconFontWrapLayout
-                    android:id="@+id/ifw_my_baby"
+                    android:id="@+id/ifw_menu_2"
                     style="@style/RapidIfwHorizontal.Arrow"
                     app:ifw_icon="{fa-firefox spin}"
                     app:ifw_title="菜单二" />
@@ -83,7 +83,7 @@
                 android:orientation="vertical">
 
                 <com.like.rapidui.ui.icon.widget.IconFontWrapLayout
-                    android:id="@+id/ifw_total_asset"
+                    android:id="@+id/ifw_menu_3"
                     style="@style/RapidIfwHorizontal.Arrow"
                     app:ifw_icon="{fa-delicious}"
                     app:ifw_title="菜单三" />

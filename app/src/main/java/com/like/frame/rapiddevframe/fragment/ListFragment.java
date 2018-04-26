@@ -1,5 +1,6 @@
 package com.like.frame.rapiddevframe.fragment;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
@@ -20,7 +21,7 @@ import java.util.ArrayList;
 /**
  * Created By Like on 2017/9/29.
  */
-
+@SuppressLint("ALL")
 public class ListFragment extends BaseListFragment<String> {
 
     private Toolbar mToolbar;
@@ -55,10 +56,8 @@ public class ListFragment extends BaseListFragment<String> {
                             list.add(String.format("item No. %d", i));
                         }
                         requestListener.onResponse(request, new Gson().toJson(list));
-                        requestListener.onComplete(request, RequestListener.SUCCESS);
                     } else {
                         requestListener.onResponse(request, "[]");
-                        requestListener.onComplete(request, RequestListener.SUCCESS);
                     }
                 }
             }

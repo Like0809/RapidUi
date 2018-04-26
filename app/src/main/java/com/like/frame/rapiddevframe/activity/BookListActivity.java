@@ -1,21 +1,16 @@
-package com.like.frame.rapiddevframe.fragment;
+package com.like.frame.rapiddevframe.activity;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.ImageView;
 
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.like.frame.rapiddevframe.R;
-import com.like.frame.rapiddevframe.entity.Banner;
 import com.like.frame.rapiddevframe.entity.Book;
 import com.like.rapidui.DataParser;
 import com.like.rapidui.PagingParam;
-import com.like.rapidui.fragment.BaseListFragment;
-import com.like.rapidui.ui.SimpleDividerDecoration;
+import com.like.rapidui.activity.BaseListActivity;
 import com.like.rapidui.ui.picasso.transformation.RoundedTransformation;
 import com.squareup.picasso.Picasso;
 
@@ -28,27 +23,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import ezy.ui.view.BannerView;
-
-/**
- * Created By Like on 2017/10/10.
- */
-
-public class HomeFragment extends BaseListFragment<Book> {
+public class BookListActivity extends BaseListActivity<Book> {
 
     @Override
-    public int getContentView() {
-        return R.layout.fragment_home;
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        final Toolbar mToolbar = mRootView.findViewById(R.id.toolbar);
-        mToolbar.setTitle("");
-        fixToolbar(mToolbar);
-        mRecyclerView.addItemDecoration(new SimpleDividerDecoration(getContext()));
-        refresh();
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mToolbar.setTitle("图书列表");
+        load();
     }
 
     @Override
@@ -63,11 +44,17 @@ public class HomeFragment extends BaseListFragment<Book> {
         return params;
     }
 
+
+    //对于各色各样的分页参数，可以在RapidUI类中进行全局设置，也可以在实际的Activity中重载此方法
     @Override
     public PagingParam getPagingParam() {
         return new PagingParam("count", "start");
     }
 
+
+    //对于奇形怪状的数据，可以自己重载解析器
+    //找到对应的列表数据作为返回值
+    // TODO: 2018/4/26 有空可以设计为只需要返回数据路径（如：/data/books），提取数据的代码由框架负责
     @Override
     public DataParser getDataParser() {
         return json -> {
@@ -80,26 +67,6 @@ public class HomeFragment extends BaseListFragment<Book> {
             }
             return null;
         };
-    }
-
-    @Override
-    public View getHeadView() {
-        View view = LayoutInflater.from(getActivity()).inflate(R.layout.layout_index_head, null);
-        BannerView bannerView = view.findViewById(R.id.banner);
-        bannerView.setTitleAdapter((BannerView.TitleAdapter<Banner>) Banner::getTitle);
-        bannerView.setViewFactory((BannerView.ViewFactory<Banner>) (banner, position, container) -> {
-            ImageView imageView = new ImageView(getContext());
-            imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-            Picasso.get().load(banner.getUrl()).into(imageView);
-            return imageView;
-        });
-        List<Banner> banner = new ArrayList<>();
-        banner.add(new Banner(R.mipmap.a, "哈哈"));
-        banner.add(new Banner(R.mipmap.a1, "呵呵"));
-        banner.add(new Banner(R.mipmap.e, "嘿嘿"));
-        bannerView.setDataList(banner);
-        bannerView.start();
-        return view;
     }
 
     @Override
@@ -118,5 +85,4 @@ public class HomeFragment extends BaseListFragment<Book> {
         Picasso.get().load(item.getImage()).transform(new RoundedTransformation(20, 0)).into((ImageView) helper.getView(R.id.iv_image));
         helper.itemView.setOnClickListener(v -> showShort(item.getSummary()));
     }
-
 }

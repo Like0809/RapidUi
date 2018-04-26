@@ -15,8 +15,6 @@ public interface RequestListener {
      */
     void onResponse(Request request, String json);
 
-    void onError(RequestStatus status, Request request, int code, String message);
-
-    void onComplete(Request request, int status);
+    void onError(Request request, int code, String message);
 
 }

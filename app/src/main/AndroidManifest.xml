@@ -13,7 +13,14 @@
 
         <activity
             android:name=".MainActivity"
-            android:theme="@style/RapidBaseTheme.Main">
+            android:theme="@style/RapidBaseTheme.Main" />
+        <activity android:name=".activity.JokeListActivity" />
+        <activity android:name=".activity.BookListActivity" />
+        <activity android:name=".activity.UserInfoActivity" />
+
+        <activity
+            android:name=".activity.SplashActivity"
+            android:theme="@style/RapidBaseTheme.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

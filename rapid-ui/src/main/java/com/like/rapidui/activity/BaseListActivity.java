@@ -14,31 +14,14 @@ import android.widget.TextView;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.google.gson.Gson;
-import com.like.rapidui.PagingParam;
+import com.like.rapidui.DataParser;
 import com.like.rapidui.Request;
-import com.like.rapidui.RequestListener;
 import com.like.rapidui.R;
-import com.like.rapidui.RapidUi;
-import com.like.rapidui.RequestStatus;
-import com.like.rapidui.callback.DataLoader;
-import com.like.rapidui.network.ApiMessage;
-import com.like.rapidui.network.OkHttpUtils;
-import com.like.rapidui.network.callback.Callback;
-import com.like.rapidui.network.callback.StringCallback;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
-import okhttp3.Call;
-
-import static com.like.rapidui.RequestListener.FAILED;
-import static com.like.rapidui.RequestListener.SUCCESS;
 
 
 /**
@@ -46,20 +29,21 @@ import static com.like.rapidui.RequestListener.SUCCESS;
  */
 
 @SuppressWarnings("ALL")
-public abstract class BaseListActivity<T> extends BaseActivity {
+public abstract class BaseListActivity<T> extends BaseActivity<T> {
 
     protected SwipeRefreshLayout mRefreshLayout;
     protected RecyclerView mRecyclerView;
     protected InnerAdapter mAdapter;
-    protected final int PULL_UP = 1, PULL_DOWN = 2, INIT = 0;
-    protected int mPageNum = 1, mPageSize = 10;
     protected EmptyView mEmptyView;
-    protected Type mEntityType;
+
+    @Override
+    public int getContentView() {
+        return R.layout.rapid_activity_base_list;
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mEntityType = ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
         mRecyclerView = findViewById(R.id.recyclerView);
         mAdapter = new InnerAdapter(getItemView());
         mRecyclerView.setAdapter(mAdapter);
@@ -107,56 +91,63 @@ public abstract class BaseListActivity<T> extends BaseActivity {
     }
 
     public void refresh(int type) {
-        loadData(getUrl(), getParams(), getHeaders(), type);
+        load(getUrl(), getParams(), getHeaders(), type);
     }
 
-    class Cbk implements RequestListener {
-        @Override
-        public void onResponse(Request request, String json) {
-            int type = request.getLoadType();
-            if (type != PULL_UP) mAdapter.replaceData(new ArrayList<T>());
-            ArrayList<T> list = parseArray(json);
-            if (list.size() < mPageSize) {
-                if (type == PULL_DOWN && mRefreshLayout != null)
-                    mRefreshLayout.setRefreshing(false);
-                mAdapter.loadMoreEnd();
-                //定制EmptyView内容;
-            } else {
-                if (type == PULL_DOWN && mRefreshLayout != null)
-                    mRefreshLayout.setRefreshing(false);
-                if (type == PULL_UP) {
-                    mAdapter.loadMoreComplete();
-                }
-            }
-            if (type == PULL_DOWN) {
-                if (getEnableLoadMore())
-                    mAdapter.setNewData(list);
-                else mAdapter.addData(list);
-            } else {
-                mAdapter.addData(list);
-            }
-        }
-
-        @Override
-        public void onError(RequestStatus status, Request request, int code, String message) {
-            showShort(message);
-            mEmptyView.setMessage(message);
-            if (request.getLoadType() == PULL_UP)
-                mAdapter.loadMoreFail();
-            if (status == RequestStatus.API_ERR) {
-                onApiError(code, message);
-            }
-        }
-
-        @Override
-        public void onComplete(Request request, int status) {
-            if (mRefreshLayout != null)
+    /**
+     * @param request
+     * @param json
+     */
+    @Override
+    public void onResponse(Request request, CharSequence json) {
+        int type = request.getLoadType();
+        if (type != PULL_UP) mAdapter.replaceData(new ArrayList<T>());
+        ArrayList<T> list = parseArray((String) json);
+        if (list.size() < mPageSize) {
+            if (type == PULL_DOWN && mRefreshLayout != null)
                 mRefreshLayout.setRefreshing(false);
+            mAdapter.loadMoreEnd();
+            //定制EmptyView内容;
+        } else {
+            if (type == PULL_DOWN && mRefreshLayout != null)
+                mRefreshLayout.setRefreshing(false);
+            if (type == PULL_UP) {
+                mAdapter.loadMoreComplete();
+            }
         }
+        if (type == PULL_DOWN) {
+            if (getEnableLoadMore())
+                mAdapter.setNewData(list);
+            else mAdapter.addData(list);
+        } else {
+            mAdapter.addData(list);
+        }
+    }
+
+    @Override
+    public final void onResponse(Request request, T data) {
+        //super.onResponse(request, data);
+    }
+
+    @Override
+    public void onError(Request request, int code, String message) {
+        showShort(message);
+        mEmptyView.setMessage(message);
+        if (request.getLoadType() == PULL_UP) {
+            mPageNum--;
+            mAdapter.loadMoreFail();
+        }
+    }
+
+    @Override
+    public void onComplete(Request request, int status) {
+        if (mRefreshLayout != null)
+            mRefreshLayout.setRefreshing(false);
     }
 
     private ArrayList<T> parseArray(String string) {
         ArrayList<T> list = new ArrayList<>();
+        string = getDataParser().findList(string);
         if (!TextUtils.isEmpty(string)) {
             JSONArray array;
             try {
@@ -175,49 +166,15 @@ public abstract class BaseListActivity<T> extends BaseActivity {
         return list;
     }
 
-    private void loadData(String url, Map<String, String> params, Map<String, String> headers, int loadType) {
-        PagingParam pagingParam = getPagingParam();
-        if (pagingParam == null) {
-            pagingParam = RapidUi.getInstance().getPagingParam();
-        }
-        params.put(pagingParam.getPageSizeParam(), "" + mPageSize);
-        params.put(pagingParam.getPageNumParam(), "" + mPageNum);
-        loadData(url, params, headers, new Cbk(), loadType);
-    }
-
-    protected void loadData(String url, Map<String, String> params, Map<String, String> headers, RequestListener requestListener, final int loadType) {
-        Request request = new Request(url, params, headers, loadType);
-        DataLoader dataLoader = getDataLoader();
-        if (dataLoader == null) {
-            dataLoader = RapidUi.getInstance().getDataLoader();
-        }
-        dataLoader.load(request, requestListener);
-    }
-
-    @Override
-    public int getContentView() {
-        return R.layout.rapid_activity_base_list;
-    }
-
     public abstract String getUrl();
 
-    public DataLoader getDataLoader() {
-        return null;
-    }
-
-    public void onApiError(int code, String message) {
-    }
-
-    public PagingParam getPagingParam() {
-        return null;
-    }
-
-    public Map<String, String> getParams() {
-        return new HashMap<>();
-    }
-
-    public Map<String, String> getHeaders() {
-        return new HashMap<>();
+    public DataParser getDataParser() {
+        return new DataParser() {
+            @Override
+            public String findList(String json) {
+                return json;
+            }
+        };
     }
 
     public View getHeadView() {
@@ -250,6 +207,10 @@ public abstract class BaseListActivity<T> extends BaseActivity {
             BaseListActivity.this.convert(helper, item);
         }
 
+    }
+
+    protected interface ListFinder {
+        String find(String json);
     }
 
 }

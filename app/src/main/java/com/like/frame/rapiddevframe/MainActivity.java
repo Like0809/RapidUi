@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.WindowInsets;
 
 import com.like.frame.rapiddevframe.fragment.HomeFragment;
+import com.like.frame.rapiddevframe.fragment.JokeListFragment;
 import com.like.frame.rapiddevframe.fragment.PersonalFragment;
 import com.like.frame.rapiddevframe.fragment.ListFragment;
 import com.like.rapidui.activity.BaseActivity;
@@ -22,9 +23,9 @@ import java.util.List;
 
 public class MainActivity extends BaseActivity {
     private List<Fragment> viewList = new ArrayList<>();
-    private String[] mTabText = {"首页", "列表", "账户"};
-    private String[] icons = new String[]{"{fa-paw}", "{fa-bars}", "{fa-star}"};
-    private String[] selectedIcons = new String[]{"{fa-paw}", "{fa-bars}", "{fa-star}"};
+    private String[] mTabText = {"首页", "列表", "笑话", "账户"};
+    private String[] icons = new String[]{"{fa-paw}", "{fa-bars}", "{fa-smile-o}", "{fa-star}"};
+    private String[] selectedIcons = new String[]{"{fa-paw}", "{fa-bars}", "{fa-smile-o spin}", "{fa-star}"};
     private TabLayout mTabLayout;
 
     @Override
@@ -33,6 +34,7 @@ public class MainActivity extends BaseActivity {
         setContentView(R.layout.activity_main);
         viewList.add(new HomeFragment());
         viewList.add(new ListFragment());
+        viewList.add(new JokeListFragment());
         viewList.add(new PersonalFragment());
         mTabLayout = findViewById(R.id.tab);
         mTabLayout.setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {

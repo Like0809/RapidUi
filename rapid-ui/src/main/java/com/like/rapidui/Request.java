@@ -10,21 +10,29 @@ public class Request {
 
     private String url;
 
+    private int loadType;
+
     private Map<String, String> params;
 
     private Map<String, String> headers;
 
-    private int loadType;
-
     public Request(String url, Map<String, String> params, Map<String, String> headers, int loadType) {
         this.url = url;
+        this.loadType = loadType;
         this.params = params;
         this.headers = headers;
-        this.loadType = loadType;
     }
 
     public String getUrl() {
         return url;
+    }
+
+    public int getLoadType() {
+        return loadType;
+    }
+
+    public void setLoadType(int loadType) {
+        this.loadType = loadType;
     }
 
     public void setUrl(String url) {
@@ -47,11 +55,4 @@ public class Request {
         this.headers = headers;
     }
 
-    public int getLoadType() {
-        return loadType;
-    }
-
-    public void setLoadType(int loadType) {
-        this.loadType = loadType;
-    }
 }

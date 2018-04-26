@@ -6,6 +6,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.like.frame.rapiddevframe.R;
+import com.like.frame.rapiddevframe.activity.BookListActivity;
+import com.like.frame.rapiddevframe.activity.JokeListActivity;
+import com.like.frame.rapiddevframe.activity.UserInfoActivity;
 import com.like.rapidui.fragment.BaseFragment;
 
 /**
@@ -25,6 +28,9 @@ public class PersonalFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
         mToolbar = view.findViewById(R.id.toolbar);
         mToolbar.setTitle("RapidUi - 个人中心");
+        view.findViewById(R.id.ifw_menu_1).setOnClickListener((v) -> jumpTo(JokeListActivity.class));
+        view.findViewById(R.id.ifw_menu_2).setOnClickListener((v) -> jumpTo(BookListActivity.class));
+        view.findViewById(R.id.ifw_menu_3).setOnClickListener((v) -> jumpTo(UserInfoActivity.class));
     }
 
     @Override

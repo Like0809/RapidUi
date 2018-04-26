@@ -32,7 +32,7 @@ public class CircleTransformation implements Transformation {
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         paint.setShader(shader);
 
-        Bitmap output = Bitmap.createBitmap(minEdge, minEdge, source.getConfig());
+        Bitmap output = Bitmap.createBitmap(minEdge, minEdge, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(output);
         canvas.drawOval(new RectF(0, 0, minEdge, minEdge), paint);
 
