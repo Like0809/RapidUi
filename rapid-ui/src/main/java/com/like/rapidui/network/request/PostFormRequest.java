@@ -33,9 +33,19 @@ public class PostFormRequest extends OkHttpRequest {
     @Override
     protected RequestBody buildRequestBody() {
         if (files == null || files.isEmpty()) {
-            FormBody.Builder builder = new FormBody.Builder();
-            addParams(builder);
-            return builder.build();
+            StringBuilder builder = new StringBuilder();
+            if (params != null) {
+                for (String key : params.keySet()) {
+                    try {
+                        builder.append(URLEncoder.encode(key, "UTF-8")).append("=").append(URLEncoder.encode(params.get(key), "UTF-8")).append("&");
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            if (builder.length() > 0)
+                builder.deleteCharAt(builder.length() - 1);
+            return RequestBody.create(MediaType.parse("application/x-www-form-urlencoded;charset=UTF-8"), builder.toString());
         } else {
             MultipartBody.Builder builder = new MultipartBody.Builder()
                     .setType(MultipartBody.FORM);

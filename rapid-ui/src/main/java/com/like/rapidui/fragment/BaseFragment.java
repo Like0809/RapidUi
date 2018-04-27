@@ -172,6 +172,7 @@ public class BaseFragment<T> extends Fragment {
     }
 
     public void onError(Request request, int code, String message) {
+        showShort(message);
     }
 
     /**
@@ -186,6 +187,7 @@ public class BaseFragment<T> extends Fragment {
      * @param status 状态，-1为失败，0为成功
      */
     public void onComplete(Request request, int status) {
+        hideDialog();
     }
 
     public String getUrl() {
