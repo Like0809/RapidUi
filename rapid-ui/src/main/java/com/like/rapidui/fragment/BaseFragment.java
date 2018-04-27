@@ -77,22 +77,21 @@ public class BaseFragment<T> extends Fragment {
     }
 
     public void load(int type) {
-        load(getUrl(), getParams(), getHeaders(), type);
+        load(getUrl(), getParams(), getHeaders(), getDataParam(), getPagingParam(), type, getDataLoader());
     }
 
-    public void load(String url, Map<String, String> params, Map<String, String> headers, int loadType) {
+    public void load(String url, Map<String, String> params, DataParam dataParam) {
+        load(url, params, getHeaders(), dataParam, getPagingParam(), INIT, getDataLoader());
+    }
+
+    public void load(String url, Map<String, String> params, Map<String, String> headers, final DataParam dataParam, PagingParam pagingParam, int loadType, DataLoader dataLoader) {
+        if (params == null) {
+            params = new HashMap<>();
+        }
         Request request = new Request(url, params, headers, loadType);
-        DataLoader dataLoader = getDataLoader();
         if (dataLoader == null) {
             dataLoader = RapidUi.getInstance(getActivity()).getDataLoader();
         }
-        final DataParam dataParam;
-        if (getDataParam() == null) {
-            dataParam = RapidUi.getInstance(getActivity()).getDataParam();
-        } else {
-            dataParam = getDataParam();
-        }
-        PagingParam pagingParam = getPagingParam();
         if (pagingParam == null) {
             pagingParam = RapidUi.getInstance(getActivity()).getPagingParam();
         }
@@ -101,32 +100,41 @@ public class BaseFragment<T> extends Fragment {
         dataLoader.load(request, new RequestListener() {
             @Override
             public void onResponse(final Request request, final String json) {
+                DataParam mDataParam;
+                if (dataParam != null) {
+                    mDataParam = dataParam;
+                } else mDataParam = RapidUi.getInstance(getActivity()).getDataParam();
                 try {
                     final Object jsonObj = new JSONTokener(json).nextValue();
                     if (jsonObj instanceof JSONArray) {
                         success(request, jsonObj.toString());
                     } else if (jsonObj instanceof JSONObject) {
                         JSONObject jsonObject = (JSONObject) jsonObj;
-                        if (jsonObject.has(dataParam.getDataParam())) {
-                            success(request, jsonObject.get(dataParam.getDataParam()).toString());
+                        if (jsonObject.has(mDataParam.getDataParam()) && jsonObject.get(mDataParam.getDataParam()) != null && !jsonObject.get(mDataParam.getDataParam()).equals(JSONObject.NULL)) {
+                            success(request, jsonObject.get(mDataParam.getDataParam()).toString());
                         } else {
-                            if (jsonObject.has(dataParam.getCodeParam())) {
-                                final int code = jsonObject.getInt(dataParam.getCodeParam());
-                                if (code == dataParam.getSuccessCode()) {
-                                    success(request, jsonObject.getString(dataParam.getMessageParam()));
-                                } else {
-                                    failed(request, code, jsonObject.getString(dataParam.getMessageParam()));
+                            if (jsonObject.has(mDataParam.getCodeParam())) {
+                                final int code = jsonObject.getInt(mDataParam.getCodeParam());
+                                try {
+                                    final String message = jsonObject.getString(mDataParam.getMessageParam());
+                                    if (code == mDataParam.getSuccessCode()) {
+                                        success(request, message);
+                                    } else {
+                                        failed(request, code, message);
+                                    }
+                                } catch (JSONException e) {
+                                    failed(request, -1, "message字段解析失败，请检查DataParam设置与数据源是否一致");
                                 }
                             } else {
                                 success(request, json);
                             }
                         }
                     } else {
-                        failed(request, -1, "数据解析出错");
+                        failed(request, -1, "非Json格式数据请勿使用本框架内的网络请求");
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    failed(request, -1, "数据解析出错");
+                    failed(request, -1, "数据解析失败");
                 }
             }
 
@@ -138,32 +146,40 @@ public class BaseFragment<T> extends Fragment {
         });
     }
 
-    private void success(final Request request, final String json) {
+    protected void success(final Request request, final String json) {
         getActivity().runOnUiThread(() -> {
-            BaseFragment.this.onResponse(request, json);
+            String url = request.getUrl();
+            T entity = null;
+            try {
+                if (mEntityType == String.class) {
+                    entity = (T) json;
+                } else {
+                    entity = (T) mJson.fromJson((String) json, mEntityType);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            BaseFragment.this.onResponse(request, json, entity);
             BaseFragment.this.onComplete(request, 0);
         });
     }
 
-    private void failed(Request request, int code, String message) {
+    protected void failed(Request request, int code, String message) {
         getActivity().runOnUiThread(() -> {
             BaseFragment.this.onError(request, -1, message);
             BaseFragment.this.onComplete(request, -1);
         });
     }
 
-
     public void onError(Request request, int code, String message) {
     }
 
-    public void onResponse(Request request, CharSequence json) {
-        if (mEntityType == String.class) {
-            onResponse(request, (T) json);
-        }
-        onResponse(request, (T) mJson.fromJson((String) json, mEntityType));
-    }
-
-    public void onResponse(Request request, T data) {
+    /**
+     * @param request 请求体
+     * @param json    返回值
+     * @param data    BaseActivity对应的第一泛型对象，尽量不要使用
+     */
+    public void onResponse(Request request, CharSequence json, T data) {
     }
 
     /**

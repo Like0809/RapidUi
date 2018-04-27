@@ -3,6 +3,7 @@ package com.like.frame.rapiddevframe.activity;
 import android.os.Bundle;
 
 import com.like.frame.rapiddevframe.ApiUrl;
+import com.like.frame.rapiddevframe.R;
 import com.like.frame.rapiddevframe.entity.User;
 import com.like.rapidui.Request;
 import com.like.rapidui.activity.BaseActivity;
@@ -17,6 +18,11 @@ public class UserInfoActivity extends BaseActivity<User> {
         super.onCreate(savedInstanceState);
         mToolbar.setTitle("Json实体获取 展示");
         load();
+        findViewById(R.id.base_item_text).setOnClickListener((v) -> {
+            Map<String, String> param = new HashMap<>();
+            param.put("city", "长沙");
+            load("https://www.apiopen.top/weatherApi", param, null);
+        });
     }
 
     @Override
@@ -41,8 +47,9 @@ public class UserInfoActivity extends BaseActivity<User> {
     }
 
     @Override
-    public void onResponse(Request request, User data) {
-        super.onResponse(request, data);
-        showShort(data.toString());
+    public void onResponse(Request request, CharSequence json, User data) {
+        super.onResponse(request, json, data);
+        showShort((String) json);
     }
+
 }

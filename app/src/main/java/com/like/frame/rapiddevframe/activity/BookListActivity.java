@@ -3,13 +3,17 @@ package com.like.frame.rapiddevframe.activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.ImageView;
 
 import com.chad.library.adapter.base.BaseViewHolder;
+import com.like.frame.rapiddevframe.ApiUrl;
 import com.like.frame.rapiddevframe.R;
 import com.like.frame.rapiddevframe.entity.Book;
+import com.like.rapidui.DataParam;
 import com.like.rapidui.DataParser;
 import com.like.rapidui.PagingParam;
+import com.like.rapidui.Request;
 import com.like.rapidui.activity.BaseListActivity;
 import com.like.rapidui.ui.picasso.transformation.RoundedTransformation;
 import com.squareup.picasso.Picasso;
@@ -75,6 +79,20 @@ public class BookListActivity extends BaseListActivity<Book> {
     }
 
     @Override
+    public void onError(Request request, int code, String message) {
+        super.onError(request, code, message);
+        Log.e("Error--> url:", request.getUrl());
+        Log.e("Error--> msg:", message);
+    }
+
+    @Override
+    public void onResponse(Request request, CharSequence json) {
+        super.onResponse(request, json);
+        Log.e("Success--> url:", request.getUrl());
+        Log.e("Success--> msg:", (String) json);
+    }
+
+    @Override
     public void convert(BaseViewHolder helper, final Book item) {
         helper.setText(R.id.tv_title, item.getTitle());
         helper.setText(R.id.tv_summary, item.getSummary());
@@ -83,6 +101,12 @@ public class BookListActivity extends BaseListActivity<Book> {
         list.addAll(item.getTranslator());
         helper.setText(R.id.tv_info, TextUtils.join("/", list));
         Picasso.get().load(item.getImage()).transform(new RoundedTransformation(20, 0)).into((ImageView) helper.getView(R.id.iv_image));
-        helper.itemView.setOnClickListener(v -> showShort(item.getSummary()));
+        helper.itemView.setOnClickListener(v -> {
+            Map<String, String> params = new HashMap<>();
+            params.put("phone", "13594347817");
+            //params.put("passwd", "123456");
+            params.put("key", "00d91e8e0cca2b76f515926a36db68f5");
+            load(ApiUrl.API_LOGIN, params, new DataParam(200, "code", "msg", "data"));
+        });
     }
 }

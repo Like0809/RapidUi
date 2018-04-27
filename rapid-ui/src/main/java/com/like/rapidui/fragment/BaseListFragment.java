@@ -90,54 +90,75 @@ public abstract class BaseListFragment<T> extends BaseFragment<T> {
     }
 
     public void refresh(int type) {
-        load(getUrl(), getParams(), getHeaders(), type);
+        load(getUrl(), getParams(), getHeaders(), getDataParam(), getPagingParam(), type, getDataLoader());
     }
 
-    @Override
-    public void onResponse(Request request, CharSequence json) {
-        int type = request.getLoadType();
-        if (type != PULL_UP) mAdapter.replaceData(new ArrayList<>());
-        ArrayList<T> list = parseArray((String) json);
-        if (list.size() < mPageSize) {
-            if (type == PULL_DOWN && mRefreshLayout != null)
-                mRefreshLayout.setRefreshing(false);
-            mAdapter.loadMoreEnd();
-            //定制EmptyView内容;
-        } else {
-            if (type == PULL_DOWN && mRefreshLayout != null)
-                mRefreshLayout.setRefreshing(false);
-            if (type == PULL_UP) {
-                mAdapter.loadMoreComplete();
+    protected final void success(final Request request, final String json) {
+        getActivity().runOnUiThread(() -> {
+            String url = getUrl();
+            if ((url != null && url.equals(request.getUrl())) || url == null) {
+                int type = request.getLoadType();
+                if (type != PULL_UP) mAdapter.replaceData(new ArrayList<>());
+                ArrayList<T> list = parseArray(json);
+                if (list.size() < mPageSize) {
+                    mAdapter.loadMoreEnd();
+                    //定制EmptyView内容;
+                } else {
+                    if (type == PULL_UP) {
+                        mAdapter.loadMoreComplete();
+                    }
+                }
+                if (type == PULL_DOWN) {
+                    if (getEnableLoadMore())
+                        mAdapter.setNewData(list);
+                    else mAdapter.addData(list);
+                } else {
+                    mAdapter.addData(list);
+                }
+                if (mRefreshLayout != null) {
+                    mRefreshLayout.setRefreshing(false);
+                }
+            } else {
+                BaseListFragment.this.onResponse(request, json, null);
+                BaseListFragment.this.onComplete(request, 0);
             }
-        }
-        if (type == PULL_DOWN) {
-            if (getEnableLoadMore())
-                mAdapter.setNewData(list);
-            else mAdapter.addData(list);
-        } else {
-            mAdapter.addData(list);
-        }
+        });
+    }
+
+    protected final void failed(final Request request, int code, final String message) {
+        getActivity().runOnUiThread(() -> {
+            String url = getUrl();
+            if (url != null && url.equals(request.getUrl())) {
+                mEmptyView.setMessage(message);
+                if (request.getLoadType() == PULL_UP) {
+                    mPageNum--;
+                    mAdapter.loadMoreFail();
+                }
+                if (mRefreshLayout != null) {
+                    mRefreshLayout.setRefreshing(false);
+                }
+            }
+            BaseListFragment.this.onError(request, -1, message);
+            BaseListFragment.this.onComplete(request, -1);
+        });
     }
 
     @Override
-    public final void onResponse(Request request, T data) {
-        //super.onResponse(request, data);
+    public final void onResponse(Request request, CharSequence json, T data) {
+        onResponse(request, json);
+    }
+
+    public void onResponse(Request request, CharSequence json) {
     }
 
     @Override
     public void onError(Request request, int code, String message) {
         showShort(message);
-        mEmptyView.setMessage(message);
-        if (request.getLoadType() == PULL_UP) {
-            mPageNum--;
-            mAdapter.loadMoreFail();
-        }
     }
 
     @Override
     public void onComplete(Request request, int status) {
-        if (mRefreshLayout != null)
-            mRefreshLayout.setRefreshing(false);
+        hideDialog();
     }
 
     private ArrayList<T> parseArray(String string) {
