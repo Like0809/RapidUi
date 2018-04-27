@@ -138,7 +138,7 @@ public abstract class BaseListFragment<T> extends BaseFragment<T> {
                     mRefreshLayout.setRefreshing(false);
                 }
             }
-            BaseListFragment.this.onError(request, -1, message);
+            BaseListFragment.this.onError(request, code, message);
             BaseListFragment.this.onComplete(request, -1);
         });
     }

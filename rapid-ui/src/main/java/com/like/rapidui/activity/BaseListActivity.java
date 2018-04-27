@@ -140,7 +140,7 @@ public abstract class BaseListActivity<T> extends BaseActivity<T> {
                     mAdapter.loadMoreFail();
                 }
             }
-            BaseListActivity.this.onError(request, -1, message);
+            BaseListActivity.this.onError(request, code, message);
             BaseListActivity.this.onComplete(request, -1);
         });
     }

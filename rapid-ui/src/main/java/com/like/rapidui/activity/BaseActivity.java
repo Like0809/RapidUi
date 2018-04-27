@@ -172,7 +172,7 @@ public class BaseActivity<T> extends AppCompatActivity {
 
     protected void failed(Request request, int code, String message) {
         runOnUiThread(() -> {
-            BaseActivity.this.onError(request, -1, message);
+            BaseActivity.this.onError(request, code, message);
             BaseActivity.this.onComplete(request, -1);
         });
     }

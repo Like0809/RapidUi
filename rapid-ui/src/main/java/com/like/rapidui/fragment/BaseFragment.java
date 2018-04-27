@@ -166,7 +166,7 @@ public class BaseFragment<T> extends Fragment {
 
     protected void failed(Request request, int code, String message) {
         getActivity().runOnUiThread(() -> {
-            BaseFragment.this.onError(request, -1, message);
+            BaseFragment.this.onError(request, code, message);
             BaseFragment.this.onComplete(request, -1);
         });
     }
