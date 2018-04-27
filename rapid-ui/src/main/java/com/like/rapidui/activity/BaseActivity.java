@@ -96,10 +96,10 @@ public class BaseActivity<T> extends AppCompatActivity {
         }
         Request request = new Request(url, params, headers, loadType);
         if (dataLoader == null) {
-            dataLoader = RapidUi.getInstance(this).getDataLoader();
+            dataLoader = RapidUi.getInstance().getDataLoader();
         }
         if (pagingParam == null) {
-            pagingParam = RapidUi.getInstance(this).getPagingParam();
+            pagingParam = RapidUi.getInstance().getPagingParam();
         }
         params.put(pagingParam.getPageSizeParam(), "" + mPageSize);
         params.put(pagingParam.getPageNumParam(), "" + mPageNum);
@@ -109,7 +109,7 @@ public class BaseActivity<T> extends AppCompatActivity {
                 DataParam mDataParam;
                 if (dataParam != null) {
                     mDataParam = dataParam;
-                } else mDataParam = RapidUi.getInstance(BaseActivity.this).getDataParam();
+                } else mDataParam = RapidUi.getInstance().getDataParam();
                 try {
                     final Object jsonObj = new JSONTokener(json).nextValue();
                     if (jsonObj instanceof JSONArray) {

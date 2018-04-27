@@ -90,10 +90,10 @@ public class BaseFragment<T> extends Fragment {
         }
         Request request = new Request(url, params, headers, loadType);
         if (dataLoader == null) {
-            dataLoader = RapidUi.getInstance(getActivity()).getDataLoader();
+            dataLoader = RapidUi.getInstance().getDataLoader();
         }
         if (pagingParam == null) {
-            pagingParam = RapidUi.getInstance(getActivity()).getPagingParam();
+            pagingParam = RapidUi.getInstance().getPagingParam();
         }
         params.put(pagingParam.getPageSizeParam(), "" + mPageSize);
         params.put(pagingParam.getPageNumParam(), "" + mPageNum);
@@ -103,7 +103,7 @@ public class BaseFragment<T> extends Fragment {
                 DataParam mDataParam;
                 if (dataParam != null) {
                     mDataParam = dataParam;
-                } else mDataParam = RapidUi.getInstance(getActivity()).getDataParam();
+                } else mDataParam = RapidUi.getInstance().getDataParam();
                 try {
                     final Object jsonObj = new JSONTokener(json).nextValue();
                     if (jsonObj instanceof JSONArray) {
