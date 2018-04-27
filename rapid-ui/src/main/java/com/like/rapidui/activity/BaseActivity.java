@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.Parcelable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -31,6 +32,7 @@ import org.json.JSONTokener;
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -285,16 +287,68 @@ public class BaseActivity<T> extends AppCompatActivity {
         if (extras != null) {
             for (String name : extras.keySet()) {
                 Object obj = extras.get(name);
-                if (obj instanceof String) {
-                    intent.putExtra(name, (String) obj);
+                if (obj instanceof Boolean) {
+                    intent.putExtra(name, (Boolean) obj);
+                } else if (obj instanceof Byte) {
+                    intent.putExtra(name, (Byte) obj);
+                } else if (obj instanceof Character) {
+                    intent.putExtra(name, (Character) obj);
+                } else if (obj instanceof Short) {
+                    intent.putExtra(name, (Short) obj);
                 } else if (obj instanceof Integer) {
                     intent.putExtra(name, (Integer) obj);
+                } else if (obj instanceof Long) {
+                    intent.putExtra(name, (Long) obj);
+                } else if (obj instanceof Float) {
+                    intent.putExtra(name, (Float) obj);
+                } else if (obj instanceof Double) {
+                    intent.putExtra(name, (Double) obj);
+                } else if (obj instanceof String) {
+                    intent.putExtra(name, (String) obj);
+                } else if (obj instanceof CharSequence) {
+                    intent.putExtra(name, (CharSequence) obj);
+                } else if (obj instanceof Parcelable) {
+                    intent.putExtra(name, (Parcelable) obj);
+                } else if (obj instanceof Parcelable[]) {
+                    intent.putExtra(name, (Parcelable[]) obj);
+                } else if (obj instanceof Boolean[]) {
+                    intent.putExtra(name, (Boolean[]) obj);
+                } else if (obj instanceof Byte[]) {
+                    intent.putExtra(name, (Byte[]) obj);
+                } else if (obj instanceof Short[]) {
+                    intent.putExtra(name, (Short[]) obj);
+                } else if (obj instanceof ArrayList) {
+                    ArrayList list = (ArrayList) obj;
+                    if (list.size() > 0) {
+                        Object o = list.get(0);
+                        if (o instanceof Parcelable) {
+                            intent.putParcelableArrayListExtra(name, (ArrayList<Parcelable>) obj);
+                        } else if (o instanceof Integer) {
+                            intent.putIntegerArrayListExtra(name, (ArrayList<Integer>) obj);
+                        } else if (o instanceof String) {
+                            intent.putStringArrayListExtra(name, (ArrayList<String>) obj);
+                        } else if (o instanceof CharSequence) {
+                            intent.putCharSequenceArrayListExtra(name, (ArrayList<CharSequence>) obj);
+                        }
+                    }
+                } else if (obj instanceof Serializable) {
+                    intent.putExtra(name, (Serializable) obj);
+                } else if (obj instanceof Character[]) {
+                    intent.putExtra(name, (Character[]) obj);
+                } else if (obj instanceof Integer[]) {
+                    intent.putExtra(name, (Integer[]) obj);
+                } else if (obj instanceof Long[]) {
+                    intent.putExtra(name, (Long[]) obj);
+                } else if (obj instanceof Float[]) {
+                    intent.putExtra(name, (Float[]) obj);
+                } else if (obj instanceof Double[]) {
+                    intent.putExtra(name, (Double[]) obj);
                 } else if (obj instanceof String[]) {
                     intent.putExtra(name, (String[]) obj);
-                } else if (obj instanceof Boolean) {
-                    intent.putExtra(name, (Boolean) obj);
-                } else {
-                    intent.putExtra(name, (Serializable) obj);
+                } else if (obj instanceof CharSequence[]) {
+                    intent.putExtra(name, (CharSequence[]) obj);
+                } else if (obj instanceof Bundle) {
+                    intent.putExtra(name, (Bundle) obj);
                 }
 
             }
