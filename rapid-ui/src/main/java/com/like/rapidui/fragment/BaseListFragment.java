@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.chad.library.adapter.base.BaseItemDraggableAdapter;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.google.gson.Gson;
@@ -30,12 +31,12 @@ import java.util.ArrayList;
  * Created By Like on 2018/3/23.
  */
 
-@SuppressWarnings("unchecked")
+@SuppressWarnings("ALL")
 public abstract class BaseListFragment<T> extends BaseFragment<T> {
 
     protected SwipeRefreshLayout mRefreshLayout;
     protected RecyclerView mRecyclerView;
-    protected InnerAdapter mAdapter;
+    protected BaseQuickAdapter mAdapter;
     protected EmptyView mEmptyView;
 
     public int getContentView() {
@@ -49,7 +50,11 @@ public abstract class BaseListFragment<T> extends BaseFragment<T> {
         mRootView = super.onCreateView(inflater, container, savedInstanceState);
         assert mRootView != null;
         mRecyclerView = mRootView.findViewById(R.id.recyclerView);
-        mAdapter = new InnerAdapter(getItemView());
+        if (getEnableDrag()) {
+            mAdapter = new DragAdapter(getItemView());
+        } else {
+            mAdapter = new InnerAdapter(getItemView());
+        }
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mEmptyView = new EmptyView(getEmptyView()) {
@@ -205,6 +210,10 @@ public abstract class BaseListFragment<T> extends BaseFragment<T> {
         return true;
     }
 
+    public boolean getEnableDrag() {
+        return false;
+    }
+
     public abstract void convert(BaseViewHolder helper, T item);
 
     protected class InnerAdapter extends BaseQuickAdapter<T, BaseViewHolder> {
@@ -217,7 +226,17 @@ public abstract class BaseListFragment<T> extends BaseFragment<T> {
         protected void convert(BaseViewHolder helper, T item) {
             BaseListFragment.this.convert(helper, item);
         }
-
     }
 
+    protected class DragAdapter extends BaseItemDraggableAdapter<T, BaseViewHolder> {
+
+        DragAdapter(int layoutResId) {
+            super(layoutResId, null);
+        }
+
+        @Override
+        protected void convert(BaseViewHolder helper, T item) {
+            BaseListFragment.this.convert(helper, item);
+        }
+    }
 }

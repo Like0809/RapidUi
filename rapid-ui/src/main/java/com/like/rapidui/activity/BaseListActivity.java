@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
+import com.chad.library.adapter.base.BaseItemDraggableAdapter;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.google.gson.Gson;
@@ -33,7 +34,7 @@ public abstract class BaseListActivity<T> extends BaseActivity<T> {
 
     protected SwipeRefreshLayout mRefreshLayout;
     protected RecyclerView mRecyclerView;
-    protected InnerAdapter mAdapter;
+    protected BaseQuickAdapter mAdapter;
     protected EmptyView mEmptyView;
 
     @Override
@@ -45,7 +46,11 @@ public abstract class BaseListActivity<T> extends BaseActivity<T> {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mRecyclerView = findViewById(R.id.recyclerView);
-        mAdapter = new InnerAdapter(getItemView());
+        if (getEnableDrag()) {
+            mAdapter = new BaseListActivity.DragAdapter(getItemView());
+        } else {
+            mAdapter = new BaseListActivity.InnerAdapter(getItemView());
+        }
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mEmptyView = new EmptyView(getEmptyView()) {
@@ -212,6 +217,10 @@ public abstract class BaseListActivity<T> extends BaseActivity<T> {
         return true;
     }
 
+    public boolean getEnableDrag() {
+        return false;
+    }
+
     public abstract void convert(BaseViewHolder helper, T item);
 
     protected class InnerAdapter extends BaseQuickAdapter<T, BaseViewHolder> {
@@ -225,6 +234,18 @@ public abstract class BaseListActivity<T> extends BaseActivity<T> {
             BaseListActivity.this.convert(helper, item);
         }
 
+    }
+
+    protected class DragAdapter extends BaseItemDraggableAdapter<T, BaseViewHolder> {
+
+        DragAdapter(int layoutResId) {
+            super(layoutResId, null);
+        }
+
+        @Override
+        protected void convert(BaseViewHolder helper, T item) {
+            BaseListActivity.this.convert(helper, item);
+        }
     }
 
     protected interface ListFinder {

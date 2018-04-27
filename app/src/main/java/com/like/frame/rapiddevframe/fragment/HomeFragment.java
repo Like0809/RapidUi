@@ -3,12 +3,15 @@ package com.like.frame.rapiddevframe.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.chad.library.adapter.base.BaseItemDraggableAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
+import com.chad.library.adapter.base.callback.ItemDragAndSwipeCallback;
 import com.like.frame.rapiddevframe.R;
 import com.like.frame.rapiddevframe.entity.Banner;
 import com.like.frame.rapiddevframe.entity.Book;
@@ -33,7 +36,7 @@ import ezy.ui.view.BannerView;
 /**
  * Created By Like on 2017/10/10.
  */
-
+@SuppressWarnings("ALL")
 public class HomeFragment extends BaseListFragment<Book> {
 
     @Override
@@ -48,6 +51,9 @@ public class HomeFragment extends BaseListFragment<Book> {
         mToolbar.setTitle("");
         fixToolbar(mToolbar);
         mRecyclerView.addItemDecoration(new SimpleDividerDecoration(getContext()));
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemDragAndSwipeCallback((BaseItemDraggableAdapter) mAdapter));
+        itemTouchHelper.attachToRecyclerView(mRecyclerView);
+        ((BaseItemDraggableAdapter) mAdapter).enableDragItem(itemTouchHelper, R.id.iv_image, true);
         refresh();
     }
 
@@ -117,6 +123,11 @@ public class HomeFragment extends BaseListFragment<Book> {
         helper.setText(R.id.tv_info, TextUtils.join("/", list));
         Picasso.get().load(item.getImage()).transform(new RoundedTransformation(20, 0)).into((ImageView) helper.getView(R.id.iv_image));
         helper.itemView.setOnClickListener(v -> showShort(item.getSummary()));
+    }
+
+    @Override
+    public boolean getEnableDrag() {
+        return true;
     }
 
 }
