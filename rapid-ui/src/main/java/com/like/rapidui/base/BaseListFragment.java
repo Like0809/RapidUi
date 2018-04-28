@@ -112,10 +112,9 @@ public abstract class BaseListFragment<T> extends BaseFragment<T> {
                 if (mRefreshLayout != null) {
                     mRefreshLayout.setRefreshing(false);
                 }
-            } else {
-                BaseListFragment.this.onResponse(request, json, null);
-                BaseListFragment.this.onComplete(request, 0);
             }
+            BaseListFragment.this.onResponse(request, json, null);
+            BaseListFragment.this.onComplete(request, 0);
         });
     }
 

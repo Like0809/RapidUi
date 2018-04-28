@@ -93,7 +93,6 @@ public abstract class BaseListActivity<T> extends BaseActivity<T> {
         runOnUiThread(() -> {
             String url = getUrl();
             if ((url != null && url.equals(request.getUrl())) || url == null) {
-
                 LoadType type = request.getLoadType();
                 if (type != LoadType.PULL_UP) mAdapter.replaceData(new ArrayList<T>());
                 ArrayList<T> list = parseArray((String) json);
@@ -115,10 +114,9 @@ public abstract class BaseListActivity<T> extends BaseActivity<T> {
                 if (mRefreshLayout != null) {
                     mRefreshLayout.setRefreshing(false);
                 }
-            } else {
-                BaseListActivity.this.onResponse(request, json, null);
-                BaseListActivity.this.onComplete(request, 0);
             }
+            BaseListActivity.this.onResponse(request, json, null);
+            BaseListActivity.this.onComplete(request, 0);
         });
     }
 
