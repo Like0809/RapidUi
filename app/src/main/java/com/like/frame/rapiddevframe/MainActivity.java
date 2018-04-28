@@ -9,13 +9,12 @@ import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.WindowInsets;
 
 import com.like.frame.rapiddevframe.fragment.HomeFragment;
 import com.like.frame.rapiddevframe.fragment.JokeListFragment;
 import com.like.frame.rapiddevframe.fragment.PersonalFragment;
 import com.like.frame.rapiddevframe.fragment.ListFragment;
-import com.like.rapidui.activity.BaseActivity;
+import com.like.rapidui.base.BaseActivity;
 import com.like.rapidui.ui.icon.widget.IconFontWrapLayout;
 
 import java.util.ArrayList;
@@ -37,12 +36,7 @@ public class MainActivity extends BaseActivity {
         viewList.add(new JokeListFragment());
         viewList.add(new PersonalFragment());
         mTabLayout = findViewById(R.id.tab);
-        mTabLayout.setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
-            @Override
-            public WindowInsets onApplyWindowInsets(View view, WindowInsets windowInsets) {
-                return windowInsets.consumeSystemWindowInsets();
-            }
-        });
+        mTabLayout.setOnApplyWindowInsetsListener((view, windowInsets) -> windowInsets.consumeSystemWindowInsets());
         ViewPager viewPager = findViewById(R.id.viewpager);
         CusFragmentPagerAdapter adapter = new CusFragmentPagerAdapter(getSupportFragmentManager(), viewList);
         viewPager.setAdapter(adapter);

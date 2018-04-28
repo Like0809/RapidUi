@@ -1,4 +1,4 @@
-package com.like.rapidui;
+package com.like.rapidui.base;
 
 public interface DataParser {
 

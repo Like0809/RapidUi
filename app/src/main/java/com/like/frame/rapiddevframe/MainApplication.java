@@ -5,7 +5,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.widget.ImageView;
 
-import com.like.rapidui.PagingParam;
 import com.like.rapidui.RapidUi;
 import com.like.rapidui.network.cookie.CookieJarImpl;
 import com.like.rapidui.network.cookie.store.PersistentCookieStore;

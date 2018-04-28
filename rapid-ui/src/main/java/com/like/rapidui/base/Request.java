@@ -1,4 +1,4 @@
-package com.like.rapidui;
+package com.like.rapidui.base;
 
 import java.util.Map;
 
@@ -10,13 +10,13 @@ public class Request {
 
     private String url;
 
-    private int loadType;
+    private LoadType loadType;
 
     private Map<String, String> params;
 
     private Map<String, String> headers;
 
-    public Request(String url, Map<String, String> params, Map<String, String> headers, int loadType) {
+    public Request(String url, Map<String, String> params, Map<String, String> headers, LoadType loadType) {
         this.url = url;
         this.loadType = loadType;
         this.params = params;
@@ -27,11 +27,11 @@ public class Request {
         return url;
     }
 
-    public int getLoadType() {
+    public LoadType getLoadType() {
         return loadType;
     }
 
-    public void setLoadType(int loadType) {
+    public void setLoadType(LoadType loadType) {
         this.loadType = loadType;
     }
 

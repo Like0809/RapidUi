@@ -5,8 +5,8 @@ import android.os.Bundle;
 import com.like.frame.rapiddevframe.ApiUrl;
 import com.like.frame.rapiddevframe.R;
 import com.like.frame.rapiddevframe.entity.User;
-import com.like.rapidui.Request;
-import com.like.rapidui.activity.BaseActivity;
+import com.like.rapidui.base.Request;
+import com.like.rapidui.base.BaseActivity;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,7 +21,7 @@ public class UserInfoActivity extends BaseActivity<User> {
         findViewById(R.id.base_item_text).setOnClickListener((v) -> {
             Map<String, String> param = new HashMap<>();
             param.put("city", "长沙");
-            load("https://www.apiopen.top/weatherApi", param, null);
+            load("https://www.apiopen.top/weatherApi", param, null,"哈哈");
         });
     }
 

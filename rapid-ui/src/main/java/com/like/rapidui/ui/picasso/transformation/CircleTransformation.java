@@ -3,6 +3,7 @@ package com.like.rapidui.ui.picasso.transformation;
 import android.graphics.Bitmap;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.RectF;
@@ -32,9 +33,17 @@ public class CircleTransformation implements Transformation {
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         paint.setShader(shader);
 
+        Paint mBorderPaint = new Paint();
+        mBorderPaint.setStyle(Paint.Style.STROKE);
+        mBorderPaint.setStrokeWidth(2);
+        mBorderPaint.setColor(Color.parseColor("#ff0000"));
+        mBorderPaint.setStrokeCap(Paint.Cap.ROUND);
+        mBorderPaint.setAntiAlias(true);
+
         Bitmap output = Bitmap.createBitmap(minEdge, minEdge, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(output);
         canvas.drawOval(new RectF(0, 0, minEdge, minEdge), paint);
+        canvas.drawCircle(minEdge / 2, minEdge / 2, minEdge / 2 - 2, mBorderPaint);
 
         source.recycle();
 

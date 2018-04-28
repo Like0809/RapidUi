@@ -10,11 +10,11 @@ import android.view.View;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.google.gson.Gson;
 import com.like.frame.rapiddevframe.R;
-import com.like.rapidui.PagingParam;
-import com.like.rapidui.Request;
-import com.like.rapidui.RequestListener;
-import com.like.rapidui.callback.DataLoader;
-import com.like.rapidui.fragment.BaseListFragment;
+import com.like.rapidui.base.PagingParam;
+import com.like.rapidui.base.Request;
+import com.like.rapidui.base.RequestListener;
+import com.like.rapidui.base.DataLoader;
+import com.like.rapidui.base.BaseListFragment;
 
 import java.util.ArrayList;
 

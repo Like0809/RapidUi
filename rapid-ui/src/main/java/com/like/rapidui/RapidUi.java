@@ -1,11 +1,12 @@
 package com.like.rapidui;
 
-import android.content.Context;
-
-import com.like.rapidui.callback.DataLoader;
+import com.like.rapidui.base.DataLoader;
+import com.like.rapidui.base.DataParam;
+import com.like.rapidui.base.PagingParam;
+import com.like.rapidui.base.Request;
+import com.like.rapidui.base.RequestListener;
 import com.like.rapidui.network.OkHttpUtils;
 import com.like.rapidui.network.callback.StringCallback;
-import com.like.rapidui.network.cookie.CookieJarImpl;
 import com.like.rapidui.network.https.HttpsUtils;
 import com.like.rapidui.network.log.LoggerInterceptor;
 
@@ -18,6 +19,7 @@ import okhttp3.OkHttpClient;
  * Created By Like on 2018/4/19.
  */
 
+@SuppressWarnings("ALL")
 public class RapidUi {
 
     private static volatile RapidUi mInstance;

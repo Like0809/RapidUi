@@ -1,4 +1,4 @@
-package com.like.rapidui.fragment;
+package com.like.rapidui.base;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
@@ -15,10 +15,7 @@ import com.chad.library.adapter.base.BaseItemDraggableAdapter;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.google.gson.Gson;
-import com.like.rapidui.DataParser;
 import com.like.rapidui.R;
-import com.like.rapidui.Request;
-import com.like.rapidui.activity.EmptyView;
 
 
 import org.json.JSONArray;
@@ -36,7 +33,7 @@ public abstract class BaseListFragment<T> extends BaseFragment<T> {
 
     protected SwipeRefreshLayout mRefreshLayout;
     protected RecyclerView mRecyclerView;
-    protected BaseQuickAdapter mAdapter;
+    protected BaseQuickAdapter<T, BaseViewHolder> mAdapter;
     protected EmptyView mEmptyView;
 
     public int getContentView() {
@@ -78,42 +75,34 @@ public abstract class BaseListFragment<T> extends BaseFragment<T> {
         mAdapter.disableLoadMoreIfNotFullPage();
         mAdapter.setOnLoadMoreListener(() -> {
             mPageNum++;
-            refresh(PULL_UP);
+            load(LoadType.PULL_UP);
         }, mRecyclerView);
         mAdapter.setEnableLoadMore(getEnableLoadMore());
         mRefreshLayout = mRootView.findViewById(R.id.swipeRefresh);
         if (mRefreshLayout != null)
             mRefreshLayout.setOnRefreshListener(() -> {
                 mPageNum = 1;
-                refresh(PULL_DOWN);
+                load(LoadType.PULL_DOWN);
             });
         return mRootView;
-    }
-
-    public void refresh() {
-        refresh(INIT);
-    }
-
-    public void refresh(int type) {
-        load(getUrl(), getParams(), getHeaders(), getDataParam(), getPagingParam(), type, getDataLoader());
     }
 
     protected final void success(final Request request, final String json) {
         getActivity().runOnUiThread(() -> {
             String url = getUrl();
             if ((url != null && url.equals(request.getUrl())) || url == null) {
-                int type = request.getLoadType();
-                if (type != PULL_UP) mAdapter.replaceData(new ArrayList<>());
+                LoadType type = request.getLoadType();
+                if (type != LoadType.PULL_UP) mAdapter.replaceData(new ArrayList<>());
                 ArrayList<T> list = parseArray(json);
                 if (list.size() < mPageSize) {
                     mAdapter.loadMoreEnd();
                     //定制EmptyView内容;
                 } else {
-                    if (type == PULL_UP) {
+                    if (type == LoadType.PULL_UP) {
                         mAdapter.loadMoreComplete();
                     }
                 }
-                if (type == PULL_DOWN) {
+                if (type == LoadType.PULL_DOWN) {
                     if (getEnableLoadMore())
                         mAdapter.setNewData(list);
                     else mAdapter.addData(list);
@@ -135,7 +124,7 @@ public abstract class BaseListFragment<T> extends BaseFragment<T> {
             String url = getUrl();
             if (url != null && url.equals(request.getUrl())) {
                 mEmptyView.setMessage(message);
-                if (request.getLoadType() == PULL_UP) {
+                if (request.getLoadType() == LoadType.PULL_UP) {
                     mPageNum--;
                     mAdapter.loadMoreFail();
                 }

@@ -5,7 +5,7 @@ import android.os.Handler;
 
 import com.like.frame.rapiddevframe.MainActivity;
 import com.like.frame.rapiddevframe.R;
-import com.like.rapidui.activity.BaseActivity;
+import com.like.rapidui.base.BaseActivity;
 
 /**
  * Created By Like on 2018/4/18.

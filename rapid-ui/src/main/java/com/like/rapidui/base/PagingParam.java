@@ -1,4 +1,4 @@
-package com.like.rapidui;
+package com.like.rapidui.base;
 
 /**
  * Created By Like on 2018/4/23.

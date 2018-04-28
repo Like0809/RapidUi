@@ -1,4 +1,4 @@
-package com.like.rapidui.activity;
+package com.like.rapidui.base;
 
 import android.view.View;
 

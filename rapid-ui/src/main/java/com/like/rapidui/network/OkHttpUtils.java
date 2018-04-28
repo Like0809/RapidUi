@@ -20,7 +20,7 @@ import okhttp3.Call;
 import okhttp3.OkHttpClient;
 import okhttp3.Response;
 
-@SuppressWarnings("unused")
+@SuppressWarnings("ALL")
 public class OkHttpUtils {
     public static final long DEFAULT_MILLISECONDS = 10_000L;
     private volatile static OkHttpUtils mInstance;
@@ -118,7 +118,7 @@ public class OkHttpUtils {
                     return;
                 }
                 if (response.isSuccessful()) {
-                    Object o = null;
+                    Object o ;
                     try {
                         o = finalCallback.parseNetworkResponse(response, id);
                         sendSuccessResultCallback(o, finalCallback, id);
@@ -142,24 +142,17 @@ public class OkHttpUtils {
     public void sendFailResultCallback(final Call call, final Exception e, final Callback callback, final int id) {
         if (callback == null) return;
 
-        mPlatform.execute(new Runnable() {
-            @Override
-            public void run() {
-                callback.onError(call, e, id);
-                callback.onAfter(id, 1);
-            }
+        mPlatform.execute(() -> {
+            callback.onError(call, e, id);
+            callback.onAfter(id, 1);
         });
     }
 
-    @SuppressWarnings("unchecked")
     public void sendSuccessResultCallback(final Object object, final Callback callback, final int id) {
         if (callback == null) return;
-        mPlatform.execute(new Runnable() {
-            @Override
-            public void run() {
-                callback.onResponse(object, id);
-                callback.onAfter(id, 0);
-            }
+        mPlatform.execute(() -> {
+            callback.onResponse(object, id);
+            callback.onAfter(id, 0);
         });
     }
 

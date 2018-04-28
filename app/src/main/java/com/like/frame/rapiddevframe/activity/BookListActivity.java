@@ -10,11 +10,11 @@ import com.chad.library.adapter.base.BaseViewHolder;
 import com.like.frame.rapiddevframe.ApiUrl;
 import com.like.frame.rapiddevframe.R;
 import com.like.frame.rapiddevframe.entity.Book;
-import com.like.rapidui.DataParam;
-import com.like.rapidui.DataParser;
-import com.like.rapidui.PagingParam;
-import com.like.rapidui.Request;
-import com.like.rapidui.activity.BaseListActivity;
+import com.like.rapidui.base.DataParam;
+import com.like.rapidui.base.DataParser;
+import com.like.rapidui.base.PagingParam;
+import com.like.rapidui.base.Request;
+import com.like.rapidui.base.BaseListActivity;
 import com.like.rapidui.ui.picasso.transformation.RoundedTransformation;
 import com.squareup.picasso.Picasso;
 

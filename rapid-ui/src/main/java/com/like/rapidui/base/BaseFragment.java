@@ -1,27 +1,22 @@
-package com.like.rapidui.activity;
+package com.like.rapidui.base;
 
 import android.Manifest;
-import android.app.Activity;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.os.Parcelable;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
-import android.view.inputmethod.InputMethodManager;
+import android.text.TextUtils;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.like.rapidui.Request;
-import com.like.rapidui.DataParam;
-import com.like.rapidui.PagingParam;
-import com.like.rapidui.R;
 import com.like.rapidui.RapidUi;
-import com.like.rapidui.RequestListener;
-import com.like.rapidui.callback.DataLoader;
 import com.like.rapidui.ui.dialog.NetworkDialog;
 
 import org.json.JSONArray;
@@ -30,6 +25,7 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -40,22 +36,23 @@ import java.util.Map;
 /**
  * Created By Like on 2016/8/12.
  */
-@SuppressWarnings("ALL")
-public class BaseActivity<T> extends AppCompatActivity {
-    protected String Tag = getClass().getSimpleName();
-    protected Toolbar mToolbar;
-    protected NetworkDialog mNetDialog;
-    protected Gson mJson;
+@SuppressWarnings("All")
+@SuppressLint("All")
+public class BaseFragment<T> extends Fragment {
+
+    protected View mRootView;
     protected final int PULL_UP = 1, PULL_DOWN = 2, INIT = 0;
     protected int mPageNum = 1, mPageSize = 10;
     protected Type mEntityType;
+    protected NetworkDialog mNetDialog;
+    protected Gson mJson;
 
     public int getContentView() {
-        return R.layout.rapid_activity_base;
+        return 0;
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         try {
             mEntityType = ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
@@ -63,36 +60,45 @@ public class BaseActivity<T> extends AppCompatActivity {
             e.printStackTrace();
         }
         mJson = new Gson();
-        setContentView(getContentView());
-        mToolbar = findViewById(R.id.toolbar);
-        if (mToolbar != null) {
-            mToolbar.setTitle(getClass().getSimpleName());
-            setSupportActionBar(mToolbar);
-            ActionBar actionBar = getSupportActionBar();
-            if (actionBar != null) {
-                actionBar.setDisplayHomeAsUpEnabled(true);
-                actionBar.setDisplayShowTitleEnabled(true);
-            }
-            mToolbar.setNavigationOnClickListener(v -> {
-                hideIME();
-                finish();
-            });
-        }
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        if (mRootView != null)
+            return mRootView;
+        mRootView = inflater.inflate(getContentView(), null, false);
+        return mRootView;
     }
 
     public void load() {
-        load(INIT);
+        load(LoadType.INIT);
     }
 
-    public void load(int type) {
-        load(getUrl(), getParams(), getHeaders(), getDataParam(), getPagingParam(), type, getDataLoader());
+    public void load(String text) {
+        if (!TextUtils.isEmpty(text)) {
+            showDialog(text);
+        }
+        load(LoadType.INIT);
+    }
+
+    public void load(LoadType loadType) {
+        load(getUrl(), getParams(), getHeaders(), getDataParam(), getPagingParam(), loadType, getDataLoader());
     }
 
     public void load(String url, Map<String, String> params, DataParam dataParam) {
-        load(url, params, getHeaders(), dataParam, getPagingParam(), INIT, getDataLoader());
+        load(url, params, dataParam, null);
     }
 
-    public void load(String url, Map<String, String> params, Map<String, String> headers, final DataParam dataParam, PagingParam pagingParam, int loadType, DataLoader dataLoader) {
+    public void load(String url, Map<String, String> params, DataParam dataParam, String text) {
+        if (!TextUtils.isEmpty(text)) {
+            showDialog(text);
+        }
+        load(url, params, getHeaders(), dataParam, getPagingParam(), LoadType.INIT, getDataLoader());
+    }
+
+
+    public void load(String url, Map<String, String> params, Map<String, String> headers, final DataParam dataParam, PagingParam pagingParam, LoadType loadType, DataLoader dataLoader) {
         if (params == null) {
             params = new HashMap<>();
         }
@@ -155,7 +161,7 @@ public class BaseActivity<T> extends AppCompatActivity {
     }
 
     protected void success(final Request request, final String json) {
-        runOnUiThread(() -> {
+        getActivity().runOnUiThread(() -> {
             String url = request.getUrl();
             T entity = null;
             try {
@@ -167,15 +173,15 @@ public class BaseActivity<T> extends AppCompatActivity {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            BaseActivity.this.onResponse(request, json, entity);
-            BaseActivity.this.onComplete(request, 0);
+            BaseFragment.this.onResponse(request, json, entity);
+            BaseFragment.this.onComplete(request, 0);
         });
     }
 
     protected void failed(Request request, int code, String message) {
-        runOnUiThread(() -> {
-            BaseActivity.this.onError(request, code, message);
-            BaseActivity.this.onComplete(request, -1);
+        getActivity().runOnUiThread(() -> {
+            BaseFragment.this.onError(request, code, message);
+            BaseFragment.this.onComplete(request, -1);
         });
     }
 
@@ -223,64 +229,42 @@ public class BaseActivity<T> extends AppCompatActivity {
     }
 
 
-    @Override
-    protected void onDestroy() {
-        hideIME();
-        super.onDestroy();
+    protected void showDialog() {
+        showDialog("加载中");
     }
 
-    public void hideIME() {
-        if (getCurrentFocus() != null)
-            hideKeyboard(getCurrentFocus().getApplicationWindowToken());
+    protected void showDialog(String message) {
+        showDialog(message, false);
     }
 
-    protected void hideKeyboard(IBinder token) {
-        if (token != null) {
-            InputMethodManager im = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            assert im != null;
-            im.hideSoftInputFromWindow(token, InputMethodManager.HIDE_NOT_ALWAYS);
-        }
+    protected void showDialog(String message, boolean cancelable) {
+        hideDialog();
+        mNetDialog = new NetworkDialog(getActivity(), message);
+        mNetDialog.setCancelable(cancelable);
+        mNetDialog.show();
+    }
+
+    protected void hideDialog() {
+        if (mNetDialog != null && mNetDialog.isShowing())
+            mNetDialog.dismiss();
     }
 
     private static String[] PERMISSIONS_STORAGE = {
             Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA
     };
 
-    public void verifyStoragePermissions(Activity activity, int requestCode) {
-        //  int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-
-        // if (permission != PackageManager.PERMISSION_GRANTED) {
-        ActivityCompat.requestPermissions(
-                activity,
-                PERMISSIONS_STORAGE,
-                requestCode
-        );
-        //  }
-    }
-
-    protected void jumpWithAnimation(Class<?> clazz) {
-        startActivity(new Intent(this, clazz));
-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+    protected void verifyStoragePermissions(int requestCode) {
+        requestPermissions(PERMISSIONS_STORAGE, requestCode);
     }
 
     protected void jumpTo(Class<?> clazz) {
-        startActivity(new Intent(this, clazz));
-    }
-
-    protected void jumpForResult(Class<?> clazz, int code) {
-        startActivityForResult(new Intent(this, clazz), code);
+        startActivity(new Intent(getActivity(), clazz));
     }
 
     protected void jumpTo(Class<?> clazz, Map<String, Object> data) {
-        Intent intent = new Intent(this, clazz);
+        Intent intent = new Intent(getActivity(), clazz);
         putExtras(data, intent);
         startActivity(intent);
-    }
-
-    protected void jumpForResult(Class<?> clazz, Map<String, Object> data, int code) {
-        Intent intent = new Intent(this, clazz);
-        putExtras(data, intent);
-        startActivityForResult(intent, code);
     }
 
     private void putExtras(Map<String, Object> extras, Intent intent) {
@@ -350,37 +334,42 @@ public class BaseActivity<T> extends AppCompatActivity {
                 } else if (obj instanceof Bundle) {
                     intent.putExtra(name, (Bundle) obj);
                 }
-
             }
         }
     }
 
-    protected void showDialog() {
-        showDialog("加载中");
-    }
-
-    protected void showDialog(String message) {
-        showDialog(message, false);
-    }
-
-    protected void showDialog(String message, boolean cancelable) {
-        hideDialog();
-        mNetDialog = new NetworkDialog(this, message);
-        mNetDialog.setCancelable(cancelable);
-        mNetDialog.show();
-    }
-
-
-    protected void hideDialog() {
-        if (mNetDialog != null && mNetDialog.isShowing())
-            mNetDialog.dismiss();
-    }
-
     protected void showShort(String message) {
-        Toast.makeText(this.getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
     }
 
-    protected void showLong(String message) {
-        Toast.makeText(this.getApplicationContext(), message, Toast.LENGTH_LONG).show();
+    /**
+     * 修正 Toolbar 的位置
+     * 在 Android 4.4 版本下无法显示内容在 StatusBar 下，所以无需修正 Toolbar 的位置
+     */
+    protected void fixToolbar(Toolbar toolbar) {
+        int statusHeight = getStatusBarHeight(getActivity());
+        ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) toolbar.getLayoutParams();
+        layoutParams.setMargins(0, statusHeight, 0, 0);
     }
+
+    /**
+     * 获取系统状态栏高度
+     */
+    public int getStatusBarHeight(Context context) {
+        Class<?> c;
+        Object obj;
+        Field field;
+        int x, statusBarHeight = 0;
+        try {
+            c = Class.forName("com.android.internal.R$dimen");
+            obj = c.newInstance();
+            field = c.getField("status_bar_height");
+            x = Integer.parseInt(field.get(obj).toString());
+            statusBarHeight = context.getResources().getDimensionPixelSize(x);
+        } catch (Exception e1) {
+            e1.printStackTrace();
+        }
+        return statusBarHeight;
+    }
+
 }

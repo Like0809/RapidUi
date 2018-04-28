@@ -10,7 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.like.frame.rapiddevframe.R;
-import com.like.rapidui.fragment.BaseFragment;
+import com.like.rapidui.base.BaseFragment;
 
 import java.util.ArrayList;
 

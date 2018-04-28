@@ -9,7 +9,7 @@ import com.like.frame.rapiddevframe.R;
 import com.like.frame.rapiddevframe.activity.BookListActivity;
 import com.like.frame.rapiddevframe.activity.JokeListActivity;
 import com.like.frame.rapiddevframe.activity.UserInfoActivity;
-import com.like.rapidui.fragment.BaseFragment;
+import com.like.rapidui.base.BaseFragment;
 
 /**
  * Created By Like on 2017/9/29.

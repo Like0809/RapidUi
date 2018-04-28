@@ -15,11 +15,11 @@ import com.chad.library.adapter.base.callback.ItemDragAndSwipeCallback;
 import com.like.frame.rapiddevframe.R;
 import com.like.frame.rapiddevframe.entity.Banner;
 import com.like.frame.rapiddevframe.entity.Book;
-import com.like.rapidui.DataParser;
-import com.like.rapidui.PagingParam;
-import com.like.rapidui.fragment.BaseListFragment;
+import com.like.rapidui.base.DataParser;
+import com.like.rapidui.base.PagingParam;
+import com.like.rapidui.base.BaseListFragment;
 import com.like.rapidui.ui.SimpleDividerDecoration;
-import com.like.rapidui.ui.picasso.transformation.RoundedTransformation;
+import com.like.rapidui.ui.picasso.transformation.CircleTransformation;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -54,7 +54,7 @@ public class HomeFragment extends BaseListFragment<Book> {
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemDragAndSwipeCallback((BaseItemDraggableAdapter) mAdapter));
         itemTouchHelper.attachToRecyclerView(mRecyclerView);
         ((BaseItemDraggableAdapter) mAdapter).enableDragItem(itemTouchHelper, R.id.iv_image, true);
-        refresh();
+        load();
     }
 
     @Override
@@ -121,7 +121,7 @@ public class HomeFragment extends BaseListFragment<Book> {
         list.addAll(item.getAuthor());
         list.addAll(item.getTranslator());
         helper.setText(R.id.tv_info, TextUtils.join("/", list));
-        Picasso.get().load(item.getImage()).transform(new RoundedTransformation(20, 0)).into((ImageView) helper.getView(R.id.iv_image));
+        Picasso.get().load(item.getImage()).transform(new CircleTransformation()).into((ImageView) helper.getView(R.id.iv_image));
         helper.itemView.setOnClickListener(v -> showShort(item.getSummary()));
     }
 
