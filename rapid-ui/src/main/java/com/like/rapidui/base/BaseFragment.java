@@ -99,6 +99,9 @@ public class BaseFragment<T> extends Fragment {
 
 
     public void load(String url, Map<String, String> params, Map<String, String> headers, final DataParam dataParam, PagingParam pagingParam, LoadType loadType, DataLoader dataLoader) {
+        if (loadType == LoadType.INIT || loadType == LoadType.PULL_DOWN) {
+            mPageNum = 1;
+        }
         if (params == null) {
             params = new HashMap<>();
         }
