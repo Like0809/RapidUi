@@ -273,35 +273,50 @@ public class BaseFragment<T> extends Fragment {
                 Object obj = extras.get(name);
                 if (obj instanceof Boolean) {
                     intent.putExtra(name, (Boolean) obj);
-                } else if (obj instanceof Byte) {
+                }
+                if (obj instanceof Byte) {
                     intent.putExtra(name, (Byte) obj);
-                } else if (obj instanceof Character) {
+                }
+                if (obj instanceof Character) {
                     intent.putExtra(name, (Character) obj);
-                } else if (obj instanceof Short) {
+                }
+                if (obj instanceof Short) {
                     intent.putExtra(name, (Short) obj);
-                } else if (obj instanceof Integer) {
+                }
+                if (obj instanceof Integer) {
                     intent.putExtra(name, (Integer) obj);
-                } else if (obj instanceof Long) {
+                }
+                if (obj instanceof Long) {
                     intent.putExtra(name, (Long) obj);
-                } else if (obj instanceof Float) {
+                }
+                if (obj instanceof Float) {
                     intent.putExtra(name, (Float) obj);
-                } else if (obj instanceof Double) {
+                }
+                if (obj instanceof Double) {
                     intent.putExtra(name, (Double) obj);
-                } else if (obj instanceof String) {
+                }
+                if (obj instanceof String) {
                     intent.putExtra(name, (String) obj);
-                } else if (obj instanceof CharSequence) {
+                }
+                if (obj instanceof CharSequence) {
                     intent.putExtra(name, (CharSequence) obj);
-                } else if (obj instanceof Parcelable) {
+                }
+                if (obj instanceof Parcelable) {
                     intent.putExtra(name, (Parcelable) obj);
-                } else if (obj instanceof Parcelable[]) {
+                }
+                if (obj instanceof Parcelable[]) {
                     intent.putExtra(name, (Parcelable[]) obj);
-                } else if (obj instanceof Boolean[]) {
+                }
+                if (obj instanceof Boolean[]) {
                     intent.putExtra(name, (Boolean[]) obj);
-                } else if (obj instanceof Byte[]) {
+                }
+                if (obj instanceof Byte[]) {
                     intent.putExtra(name, (Byte[]) obj);
-                } else if (obj instanceof Short[]) {
+                }
+                if (obj instanceof Short[]) {
                     intent.putExtra(name, (Short[]) obj);
-                } else if (obj instanceof ArrayList) {
+                }
+                if (obj instanceof ArrayList) {
                     ArrayList list = (ArrayList) obj;
                     if (list.size() > 0) {
                         Object o = list.get(0);
@@ -315,23 +330,32 @@ public class BaseFragment<T> extends Fragment {
                             intent.putCharSequenceArrayListExtra(name, (ArrayList<CharSequence>) obj);
                         }
                     }
-                } else if (obj instanceof Serializable) {
+                }
+                if (obj instanceof Serializable) {
                     intent.putExtra(name, (Serializable) obj);
-                } else if (obj instanceof Character[]) {
+                }
+                if (obj instanceof Character[]) {
                     intent.putExtra(name, (Character[]) obj);
-                } else if (obj instanceof Integer[]) {
+                }
+                if (obj instanceof Integer[]) {
                     intent.putExtra(name, (Integer[]) obj);
-                } else if (obj instanceof Long[]) {
+                }
+                if (obj instanceof Long[]) {
                     intent.putExtra(name, (Long[]) obj);
-                } else if (obj instanceof Float[]) {
+                }
+                if (obj instanceof Float[]) {
                     intent.putExtra(name, (Float[]) obj);
-                } else if (obj instanceof Double[]) {
+                }
+                if (obj instanceof Double[]) {
                     intent.putExtra(name, (Double[]) obj);
-                } else if (obj instanceof String[]) {
+                }
+                if (obj instanceof String[]) {
                     intent.putExtra(name, (String[]) obj);
-                } else if (obj instanceof CharSequence[]) {
+                }
+                if (obj instanceof CharSequence[]) {
                     intent.putExtra(name, (CharSequence[]) obj);
-                } else if (obj instanceof Bundle) {
+                }
+                if (obj instanceof Bundle) {
                     intent.putExtra(name, (Bundle) obj);
                 }
             }
