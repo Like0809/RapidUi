@@ -1,9 +1,7 @@
 package com.like.rapidui.ui.picasso.transformation;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 
-import com.like.rapidui.utils.ViewUtils;
 import com.squareup.picasso.Transformation;
 
 /**
@@ -12,19 +10,19 @@ import com.squareup.picasso.Transformation;
 
 public class AdapterTransformation implements Transformation {
 
-    private Context context;
+    private int mWidth;
 
-    public AdapterTransformation(Context context) {
-        this.context = context;
+    public AdapterTransformation(int width) {
+        this.mWidth = width;
     }
 
     @Override
     public Bitmap transform(Bitmap bitmap) {
         if (bitmap != null) {
             double ratio = bitmap.getHeight() / bitmap.getWidth();
-            int screenHeight = (int) (ViewUtils.getInstance(context).getWidth() * ratio);
+            int screenHeight = (int) (mWidth * ratio);
             if (screenHeight <= 0) return bitmap;
-            Bitmap newBitMap = Bitmap.createScaledBitmap(bitmap, ViewUtils.getInstance(context).getWidth(), screenHeight, true);
+            Bitmap newBitMap = Bitmap.createScaledBitmap(bitmap, mWidth, screenHeight, true);
             bitmap.recycle();
             return newBitMap;
         }
