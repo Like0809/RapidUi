@@ -368,7 +368,7 @@ public class BaseFragment<T> extends Fragment {
 
     protected void showShort(String message) {
         if (mToast == null) {
-            mToast = new Toast(getContext().getApplicationContext());
+            mToast = Toast.makeText(getContext().getApplicationContext(), "", Toast.LENGTH_SHORT);
         }
         mToast.setText(message);
         mToast.setDuration(Toast.LENGTH_SHORT);

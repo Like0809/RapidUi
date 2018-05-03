@@ -420,7 +420,7 @@ public class BaseActivity<T> extends AppCompatActivity {
 
     protected void showShort(String message) {
         if (mToast == null) {
-            mToast = new Toast(this.getApplicationContext());
+            mToast = Toast.makeText(this.getApplicationContext(), "", Toast.LENGTH_SHORT);
         }
         mToast.setText(message);
         mToast.setDuration(Toast.LENGTH_SHORT);
@@ -429,7 +429,7 @@ public class BaseActivity<T> extends AppCompatActivity {
 
     protected void showLong(String message) {
         if (mToast == null) {
-            mToast = new Toast(this.getApplicationContext());
+            mToast = Toast.makeText(this.getApplicationContext(), "", Toast.LENGTH_LONG);
         }
         mToast.setText(message);
         mToast.setDuration(Toast.LENGTH_LONG);
