@@ -44,6 +44,8 @@ public class BaseActivity<T> extends AppCompatActivity {
     protected Gson mJson;
     protected int mPageNum = 1, mPageSize = 10;
     protected Type mEntityType;
+    protected Toast mToast;
+    protected Bundle mExtra;
 
     public int getContentView() {
         return R.layout.rapid_activity_base;
@@ -52,6 +54,9 @@ public class BaseActivity<T> extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mExtra = getIntent().getExtras();
+        if (mExtra == null)
+            mExtra = new Bundle();
         try {
             mEntityType = ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
         } catch (Exception e) {
@@ -414,10 +419,20 @@ public class BaseActivity<T> extends AppCompatActivity {
     }
 
     protected void showShort(String message) {
-        Toast.makeText(this.getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+        if (mToast == null) {
+            mToast = new Toast(this.getApplicationContext());
+        }
+        mToast.setText(message);
+        mToast.setDuration(Toast.LENGTH_SHORT);
+        mToast.show();
     }
 
     protected void showLong(String message) {
-        Toast.makeText(this.getApplicationContext(), message, Toast.LENGTH_LONG).show();
+        if (mToast == null) {
+            mToast = new Toast(this.getApplicationContext());
+        }
+        mToast.setText(message);
+        mToast.setDuration(Toast.LENGTH_LONG);
+        mToast.show();
     }
 }

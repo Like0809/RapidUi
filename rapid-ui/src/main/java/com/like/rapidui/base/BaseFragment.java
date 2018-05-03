@@ -46,6 +46,7 @@ public class BaseFragment<T> extends Fragment {
     protected Type mEntityType;
     protected NetworkDialog mNetDialog;
     protected Gson mJson;
+    protected Toast mToast;
 
     public int getContentView() {
         return 0;
@@ -366,7 +367,12 @@ public class BaseFragment<T> extends Fragment {
     }
 
     protected void showShort(String message) {
-        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+        if (mToast == null) {
+            mToast = new Toast(getContext().getApplicationContext());
+        }
+        mToast.setText(message);
+        mToast.setDuration(Toast.LENGTH_SHORT);
+        mToast.show();
     }
 
     /**

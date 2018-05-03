@@ -17,7 +17,7 @@
     <com.like.rapidui.ui.WheelProgress
         android:layout_width="25dp"
         android:layout_height="25dp"
-        app:wp_barColor="@color/blue700"
+        app:wp_barColor="@color/colorPrimary"
         app:wp_progressIndeterminate="true" />
 
     <TextView
