@@ -172,7 +172,7 @@ public class BaseActivity<T> extends AppCompatActivity {
     }
 
     protected void success(final Request request, final String json) {
-        if (!isFinishing() && isDestroyed())
+        if (!isFinishing() && !isDestroyed())
             runOnUiThread(() -> {
                 String url = request.getUrl();
                 T entity = null;
@@ -191,7 +191,7 @@ public class BaseActivity<T> extends AppCompatActivity {
     }
 
     protected void failed(Request request, int code, String message) {
-        if (!isFinishing() && isDestroyed())
+        if (!isFinishing() && !isDestroyed())
             runOnUiThread(() -> {
                 BaseActivity.this.onError(request, code, message);
                 BaseActivity.this.onComplete(request, -1);
@@ -411,7 +411,7 @@ public class BaseActivity<T> extends AppCompatActivity {
         hideDialog();
         mNetDialog = new NetworkDialog(this, message);
         mNetDialog.setCancelable(cancelable);
-        if (!isFinishing() && isDestroyed())
+        if (!isFinishing() && !isDestroyed())
             mNetDialog.show();
     }
 
@@ -427,7 +427,7 @@ public class BaseActivity<T> extends AppCompatActivity {
         }
         mToast.setText(message);
         mToast.setDuration(Toast.LENGTH_SHORT);
-        if (!isFinishing() && isDestroyed())
+        if (!isFinishing() && !isDestroyed())
             mToast.show();
     }
 
@@ -437,7 +437,7 @@ public class BaseActivity<T> extends AppCompatActivity {
         }
         mToast.setText(message);
         mToast.setDuration(Toast.LENGTH_LONG);
-        if (!isFinishing() && isDestroyed())
+        if (!isFinishing() && !isDestroyed())
             mToast.show();
     }
 }

@@ -90,52 +90,54 @@ public abstract class BaseListActivity<T> extends BaseActivity<T> {
     }
 
     protected final void success(final Request request, final String json) {
-        runOnUiThread(() -> {
-            String url = getUrl();
-            if ((url != null && url.equals(request.getUrl())) || url == null) {
-                LoadType type = request.getLoadType();
-                if (type != LoadType.PULL_UP) mAdapter.replaceData(new ArrayList<T>());
-                ArrayList<T> list = parseArray((String) json);
-                if (list.size() < mPageSize) {
-                    mAdapter.loadMoreEnd();
-                    //定制EmptyView内容;
-                } else {
-                    if (type == LoadType.PULL_UP) {
-                        mAdapter.loadMoreComplete();
+        if (!isFinishing() && !isDestroyed())
+            runOnUiThread(() -> {
+                String url = getUrl();
+                if ((url != null && url.equals(request.getUrl())) || url == null) {
+                    LoadType type = request.getLoadType();
+                    if (type != LoadType.PULL_UP) mAdapter.replaceData(new ArrayList<T>());
+                    ArrayList<T> list = parseArray((String) json);
+                    if (list.size() < mPageSize) {
+                        mAdapter.loadMoreEnd();
+                        //定制EmptyView内容;
+                    } else {
+                        if (type == LoadType.PULL_UP) {
+                            mAdapter.loadMoreComplete();
+                        }
+                    }
+                    if (type == LoadType.PULL_DOWN) {
+                        if (getEnableLoadMore())
+                            mAdapter.setNewData(list);
+                        else mAdapter.addData(list);
+                    } else {
+                        mAdapter.addData(list);
+                    }
+                    if (mRefreshLayout != null) {
+                        mRefreshLayout.setRefreshing(false);
                     }
                 }
-                if (type == LoadType.PULL_DOWN) {
-                    if (getEnableLoadMore())
-                        mAdapter.setNewData(list);
-                    else mAdapter.addData(list);
-                } else {
-                    mAdapter.addData(list);
-                }
-                if (mRefreshLayout != null) {
-                    mRefreshLayout.setRefreshing(false);
-                }
-            }
-            BaseListActivity.this.onResponse(request, json, null);
-            BaseListActivity.this.onComplete(request, 0);
-        });
+                BaseListActivity.this.onResponse(request, json, null);
+                BaseListActivity.this.onComplete(request, 0);
+            });
     }
 
     protected final void failed(final Request request, int code, final String message) {
-        runOnUiThread(() -> {
-            String url = getUrl();
-            if (url != null && url.equals(request.getUrl())) {
-                if (mRefreshLayout != null) {
-                    mRefreshLayout.setRefreshing(false);
+        if (!isFinishing() && !isDestroyed())
+            runOnUiThread(() -> {
+                String url = getUrl();
+                if (url != null && url.equals(request.getUrl())) {
+                    if (mRefreshLayout != null) {
+                        mRefreshLayout.setRefreshing(false);
+                    }
+                    mEmptyView.setMessage(message);
+                    if (request.getLoadType() == LoadType.PULL_UP) {
+                        mPageNum--;
+                        mAdapter.loadMoreFail();
+                    }
                 }
-                mEmptyView.setMessage(message);
-                if (request.getLoadType() == LoadType.PULL_UP) {
-                    mPageNum--;
-                    mAdapter.loadMoreFail();
-                }
-            }
-            BaseListActivity.this.onError(request, code, message);
-            BaseListActivity.this.onComplete(request, -1);
-        });
+                BaseListActivity.this.onError(request, code, message);
+                BaseListActivity.this.onComplete(request, -1);
+            });
     }
 
     @Override
