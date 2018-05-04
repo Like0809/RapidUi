@@ -1,6 +1,7 @@
 package com.like.rapidui.base;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -88,52 +89,58 @@ public abstract class BaseListFragment<T> extends BaseFragment<T> {
     }
 
     protected final void success(final Request request, final String json) {
-        getActivity().runOnUiThread(() -> {
-            String url = getUrl();
-            if ((url != null && url.equals(request.getUrl())) || url == null) {
-                LoadType type = request.getLoadType();
-                if (type != LoadType.PULL_UP) mAdapter.replaceData(new ArrayList<>());
-                ArrayList<T> list = parseArray(json);
-                if (list.size() < mPageSize) {
-                    mAdapter.loadMoreEnd();
-                    //定制EmptyView内容;
-                } else {
-                    if (type == LoadType.PULL_UP) {
-                        mAdapter.loadMoreComplete();
+        Activity activity = getActivity();
+        if (!activity.isFinishing() && !activity.isDestroyed()) {
+            activity.runOnUiThread(() -> {
+                String url = getUrl();
+                if ((url != null && url.equals(request.getUrl())) || url == null) {
+                    LoadType type = request.getLoadType();
+                    if (type != LoadType.PULL_UP) mAdapter.replaceData(new ArrayList<>());
+                    ArrayList<T> list = parseArray(json);
+                    if (list.size() < mPageSize) {
+                        mAdapter.loadMoreEnd();
+                        //定制EmptyView内容;
+                    } else {
+                        if (type == LoadType.PULL_UP) {
+                            mAdapter.loadMoreComplete();
+                        }
+                    }
+                    if (type == LoadType.PULL_DOWN) {
+                        if (getEnableLoadMore())
+                            mAdapter.setNewData(list);
+                        else mAdapter.addData(list);
+                    } else {
+                        mAdapter.addData(list);
+                    }
+                    if (mRefreshLayout != null) {
+                        mRefreshLayout.setRefreshing(false);
                     }
                 }
-                if (type == LoadType.PULL_DOWN) {
-                    if (getEnableLoadMore())
-                        mAdapter.setNewData(list);
-                    else mAdapter.addData(list);
-                } else {
-                    mAdapter.addData(list);
-                }
-                if (mRefreshLayout != null) {
-                    mRefreshLayout.setRefreshing(false);
-                }
-            }
-            BaseListFragment.this.onResponse(request, json, null);
-            BaseListFragment.this.onComplete(request, 0);
-        });
+                BaseListFragment.this.onResponse(request, json, null);
+                BaseListFragment.this.onComplete(request, 0);
+            });
+        }
     }
 
     protected final void failed(final Request request, int code, final String message) {
-        getActivity().runOnUiThread(() -> {
-            String url = getUrl();
-            if (url != null && url.equals(request.getUrl())) {
-                mEmptyView.setMessage(message);
-                if (request.getLoadType() == LoadType.PULL_UP) {
-                    mPageNum--;
-                    mAdapter.loadMoreFail();
+        Activity activity = getActivity();
+        if (!activity.isFinishing() && !activity.isDestroyed()) {
+            activity.runOnUiThread(() -> {
+                String url = getUrl();
+                if (url != null && url.equals(request.getUrl())) {
+                    mEmptyView.setMessage(message);
+                    if (request.getLoadType() == LoadType.PULL_UP) {
+                        mPageNum--;
+                        mAdapter.loadMoreFail();
+                    }
+                    if (mRefreshLayout != null) {
+                        mRefreshLayout.setRefreshing(false);
+                    }
                 }
-                if (mRefreshLayout != null) {
-                    mRefreshLayout.setRefreshing(false);
-                }
-            }
-            BaseListFragment.this.onError(request, code, message);
-            BaseListFragment.this.onComplete(request, -1);
-        });
+                BaseListFragment.this.onError(request, code, message);
+                BaseListFragment.this.onComplete(request, -1);
+            });
+        }
     }
 
     @Override

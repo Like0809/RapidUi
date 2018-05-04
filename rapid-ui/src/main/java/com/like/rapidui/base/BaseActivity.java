@@ -172,28 +172,30 @@ public class BaseActivity<T> extends AppCompatActivity {
     }
 
     protected void success(final Request request, final String json) {
-        runOnUiThread(() -> {
-            String url = request.getUrl();
-            T entity = null;
-            try {
-                if (mEntityType == String.class) {
-                    entity = (T) json;
-                } else {
-                    entity = (T) mJson.fromJson((String) json, mEntityType);
+        if (!isFinishing() && isDestroyed())
+            runOnUiThread(() -> {
+                String url = request.getUrl();
+                T entity = null;
+                try {
+                    if (mEntityType == String.class) {
+                        entity = (T) json;
+                    } else {
+                        entity = (T) mJson.fromJson((String) json, mEntityType);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            BaseActivity.this.onResponse(request, json, entity);
-            BaseActivity.this.onComplete(request, 0);
-        });
+                BaseActivity.this.onResponse(request, json, entity);
+                BaseActivity.this.onComplete(request, 0);
+            });
     }
 
     protected void failed(Request request, int code, String message) {
-        runOnUiThread(() -> {
-            BaseActivity.this.onError(request, code, message);
-            BaseActivity.this.onComplete(request, -1);
-        });
+        if (!isFinishing() && isDestroyed())
+            runOnUiThread(() -> {
+                BaseActivity.this.onError(request, code, message);
+                BaseActivity.this.onComplete(request, -1);
+            });
     }
 
     public void onError(Request request, int code, String message) {
@@ -409,7 +411,8 @@ public class BaseActivity<T> extends AppCompatActivity {
         hideDialog();
         mNetDialog = new NetworkDialog(this, message);
         mNetDialog.setCancelable(cancelable);
-        mNetDialog.show();
+        if (!isFinishing() && isDestroyed())
+            mNetDialog.show();
     }
 
 
@@ -424,7 +427,8 @@ public class BaseActivity<T> extends AppCompatActivity {
         }
         mToast.setText(message);
         mToast.setDuration(Toast.LENGTH_SHORT);
-        mToast.show();
+        if (!isFinishing() && isDestroyed())
+            mToast.show();
     }
 
     protected void showLong(String message) {
@@ -433,6 +437,7 @@ public class BaseActivity<T> extends AppCompatActivity {
         }
         mToast.setText(message);
         mToast.setDuration(Toast.LENGTH_LONG);
-        mToast.show();
+        if (!isFinishing() && isDestroyed())
+            mToast.show();
     }
 }

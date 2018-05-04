@@ -2,6 +2,7 @@ package com.like.rapidui.base;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -165,28 +166,34 @@ public class BaseFragment<T> extends Fragment {
     }
 
     protected void success(final Request request, final String json) {
-        getActivity().runOnUiThread(() -> {
-            String url = request.getUrl();
-            T entity = null;
-            try {
-                if (mEntityType == String.class) {
-                    entity = (T) json;
-                } else {
-                    entity = (T) mJson.fromJson((String) json, mEntityType);
+        Activity activity = getActivity();
+        if (!activity.isFinishing() && !activity.isDestroyed()) {
+            activity.runOnUiThread(() -> {
+                String url = request.getUrl();
+                T entity = null;
+                try {
+                    if (mEntityType == String.class) {
+                        entity = (T) json;
+                    } else {
+                        entity = (T) mJson.fromJson((String) json, mEntityType);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            BaseFragment.this.onResponse(request, json, entity);
-            BaseFragment.this.onComplete(request, 0);
-        });
+                BaseFragment.this.onResponse(request, json, entity);
+                BaseFragment.this.onComplete(request, 0);
+            });
+        }
     }
 
     protected void failed(Request request, int code, String message) {
-        getActivity().runOnUiThread(() -> {
-            BaseFragment.this.onError(request, code, message);
-            BaseFragment.this.onComplete(request, -1);
-        });
+        Activity activity = getActivity();
+        if (!activity.isFinishing() && !activity.isDestroyed()) {
+            activity.runOnUiThread(() -> {
+                BaseFragment.this.onError(request, code, message);
+                BaseFragment.this.onComplete(request, -1);
+            });
+        }
     }
 
     public void onError(Request request, int code, String message) {
@@ -245,7 +252,10 @@ public class BaseFragment<T> extends Fragment {
         hideDialog();
         mNetDialog = new NetworkDialog(getActivity(), message);
         mNetDialog.setCancelable(cancelable);
-        mNetDialog.show();
+        Activity activity = getActivity();
+        if (!activity.isFinishing() && !activity.isDestroyed()) {
+            mNetDialog.show();
+        }
     }
 
     protected void hideDialog() {
@@ -370,9 +380,12 @@ public class BaseFragment<T> extends Fragment {
         if (mToast == null) {
             mToast = Toast.makeText(getContext().getApplicationContext(), "", Toast.LENGTH_SHORT);
         }
-        mToast.setText(message);
-        mToast.setDuration(Toast.LENGTH_SHORT);
-        mToast.show();
+        Activity activity = getActivity();
+        if (!activity.isFinishing() && !activity.isDestroyed()) {
+            mToast.setText(message);
+            mToast.setDuration(Toast.LENGTH_SHORT);
+            mToast.show();
+        }
     }
 
     /**
