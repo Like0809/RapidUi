@@ -73,8 +73,10 @@ public abstract class BaseListActivity<T> extends BaseActivity<T> {
         mAdapter.setOnLoadMoreListener(new BaseQuickAdapter.RequestLoadMoreListener() {
             @Override
             public void onLoadMoreRequested() {
-                mPageNum++;
-                load(LoadType.PULL_UP);
+                if (getEnableLoadMore()) {
+                    mPageNum++;
+                    load(LoadType.PULL_UP);
+                }
             }
         }, mRecyclerView);
         mAdapter.setEnableLoadMore(getEnableLoadMore());
