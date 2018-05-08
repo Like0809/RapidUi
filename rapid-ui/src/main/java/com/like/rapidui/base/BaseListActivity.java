@@ -70,15 +70,15 @@ public abstract class BaseListActivity<T> extends BaseActivity<T> {
         mAdapter.setHeaderAndEmpty(true);
         mAdapter.bindToRecyclerView(mRecyclerView);
         mAdapter.disableLoadMoreIfNotFullPage();
-        mAdapter.setOnLoadMoreListener(new BaseQuickAdapter.RequestLoadMoreListener() {
-            @Override
-            public void onLoadMoreRequested() {
-                if (getEnableLoadMore()) {
+        if (getEnableLoadMore()) {
+            mAdapter.setOnLoadMoreListener(new BaseQuickAdapter.RequestLoadMoreListener() {
+                @Override
+                public void onLoadMoreRequested() {
                     mPageNum++;
                     load(LoadType.PULL_UP);
                 }
-            }
-        }, mRecyclerView);
+            }, mRecyclerView);
+        }
         mAdapter.setEnableLoadMore(getEnableLoadMore());
         mRefreshLayout = findViewById(R.id.swipeRefresh);
         if (mRefreshLayout != null)

@@ -74,12 +74,12 @@ public abstract class BaseListFragment<T> extends BaseFragment<T> {
         mAdapter.setHeaderAndEmpty(true);
         mAdapter.bindToRecyclerView(mRecyclerView);
         mAdapter.disableLoadMoreIfNotFullPage();
-        mAdapter.setOnLoadMoreListener(() -> {
-            if (getEnableLoadMore()) {
+        if (getEnableLoadMore()) {
+            mAdapter.setOnLoadMoreListener(() -> {
                 mPageNum++;
                 load(LoadType.PULL_UP);
-            }
-        }, mRecyclerView);
+            }, mRecyclerView);
+        }
         mAdapter.setEnableLoadMore(getEnableLoadMore());
         mRefreshLayout = mRootView.findViewById(R.id.swipeRefresh);
         if (mRefreshLayout != null)
