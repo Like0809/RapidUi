@@ -7,7 +7,7 @@ public class MaterialModule implements IconFontDescriptor {
 
     @Override
     public String ttfFileName() {
-        return "iconify/android-iconify-material.ttf";
+        return "android-iconify-material.ttf";
     }
 
     @Override
